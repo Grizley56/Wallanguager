@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
 
 namespace Wallanguager
 {
@@ -23,6 +24,14 @@ namespace Wallanguager
 		public MainWindow()
 		{
 			InitializeComponent();
+		}
+
+		private void GeneralWallaperSettingsOpen(object sender, RoutedEventArgs e)
+		{
+			GeneralWallaperSettings window = new GeneralWallaperSettings();
+			window.Owner = this;
+			window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+			window.ShowDialog();
 		}
 	}
 }

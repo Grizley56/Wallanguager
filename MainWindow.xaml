@@ -3,10 +3,182 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xwpf="clr-namespace:WpfColorFontDialog;assembly=WpfColorFontDialog"
         xmlns:local="clr-namespace:Wallanguager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="Wallanguager" Height="650" Width="700">
     <Grid>
-        
+        <Menu x:Name="menu" Height="25" VerticalAlignment="Top" FontFamily="OCR A Extended" FontSize="14" Background="White" BorderBrush="#FFD81B1B" BorderThickness="0">
+            <MenuItem Header="_Main" Margin="5 5">
+                <MenuItem Header="Display" />
+                <MenuItem Header="Exit" />
+            </MenuItem>
+            <MenuItem Header="_Display">
+                <WrapPanel Width="275">
+                    <Label Content="Wallapers offset" />
+                    <Slider x:Name="wallaperOffset" Minimum="0" Maximum="100" Width="100" Margin="15 2 0 0" Value="30" />
+                    <Label Content="Wallapers size" />
+                    <Slider x:Name="wallaperSize"  Minimum="50" Maximum="300" Width="100" Margin="32 2 0 0" Value="300" />
+                </WrapPanel>
+            </MenuItem>
+            <MenuItem Header="_Statistic">
+                
+            </MenuItem>
+        </Menu>
+        <TabControl Margin="10,30,10,10" FontFamily="OCR A Extended" FontSize="14" >
+            <TabItem Header="Wallapers">
+                <Grid>
+                    <Grid.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#19FFFFFF" Offset="0"/>
+                            <GradientStop Color="#336BC9F5" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Grid.Background>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30*" />
+                        <ColumnDefinition Width="70*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="45"/>
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+
+                        <Grid Cursor="Hand" Grid.Column="0" Grid.Row="0" Margin="10,5,0,10" HorizontalAlignment="Left" Width="180">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0" BorderThickness="0" Height="24" ToolTip="Add wallaper" Margin="0,3,12,3">
+                                <Image Source="Content/addImage.png"></Image>
+                            </Button>
+
+                            <Button Grid.Column="1" BorderThickness="0"  Height="24" ToolTip="Remove wallaper" Margin="0,3,12,3">
+                                <Image Source="Content/removeImage.png"></Image>
+                            </Button>
+
+                            <Button Grid.Column="2" BorderThickness="0"  Height="24" ToolTip="Upload wallaper" Margin="0,3,12,3">
+                                <Image Source="Content/uploadImage.png"></Image>
+                            </Button>
+                        </Grid>
+
+                        <Border Grid.Row="1" BorderThickness="1" Margin="0 10 0 0">
+                            <Border.BorderBrush>
+                                <RadialGradientBrush>
+                                    <GradientStop Color="Black"/>
+                                    <GradientStop Color="#FFE8E8E8" Offset="1"/>
+                                </RadialGradientBrush>
+                            </Border.BorderBrush>
+                            <ScrollViewer Grid.Row="1" >
+                                <ScrollViewer.BorderBrush>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <GradientStop Color="Black" Offset="0.213"/>
+                                        <GradientStop Color="White" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </ScrollViewer.BorderBrush>
+                                <WrapPanel x:Name="images"></WrapPanel>
+                            </ScrollViewer>
+                        </Border>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="45"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="7" BorderThickness="0" Height="24" ToolTip="General settings" Margin="10,12,9,9" Click="GeneralWallaperSettingsOpen">
+                                <Image Source="Content/GeneralSettings.png"></Image>
+                            </Button>
+
+                            <Button Grid.Column="6" BorderThickness="0"  Height="24" ToolTip="Refresh wallaper settings" Margin="10,12,9,9" >
+                                <Image Source="Content/refreshImage.png"></Image>
+                            </Button>
+
+                            <Button Grid.Column="3" BorderThickness="0" Height="24" ToolTip="General settings" Margin="10,12,9,9">
+                                <Image Source="Content/engineStart.png"></Image>
+                            </Button>
+
+                            <Button Grid.Column="4" BorderThickness="0"  Height="24" ToolTip="Refresh wallaper settings" Margin="10,12,9,9" >
+                                <Image Source="Content/enginePause.png"></Image>
+                            </Button>
+
+                        </Grid>
+
+                        <GroupBox Grid.Row="1" Header="Editor" Margin="10,0,0,0">
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+
+                                <Border Grid.Row="0" BorderThickness="1" BorderBrush="LightGray">
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="222,242" MappingMode="Absolute" StartPoint="222,0" Opacity="0.5">
+                                            <GradientStop Color="#7200678D"/>
+                                            <GradientStop Color="#19000000" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <DockPanel>
+                                        <Image x:Name="WallaperZoomed"></Image>
+                                    </DockPanel>
+                                </Border>
+
+                                <Grid Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition  Width="auto"/>
+                                        <ColumnDefinition  Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <xwpf:ColorFontChooser FontFamily="Times New Roman" InnerText="Example: Пример"  Width="Auto" Margin="3,20,0,10" Height="Auto"/>
+
+                                    <GroupBox Grid.Column="1" Header="Other" Margin="0,21,0,11">
+                                        <WrapPanel>
+                                            <Label>Style</Label>
+                                            <ComboBox Width="100">
+                                                <ListBoxItem Content="Fill"/>
+                                                <ListBoxItem Content="Fit"/>
+                                                <ListBoxItem Content="Stretch"/>
+                                                <ListBoxItem Content="Tile"/>
+                                                <ListBoxItem Content="Center"/>
+                                                <ListBoxItem Content="Span"/>
+                                            </ComboBox>
+                                        </WrapPanel>
+                                    </GroupBox>
+
+                                </Grid>
+
+
+                            </Grid>
+                        </GroupBox>
+
+                    </Grid>
+
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Unnamed"></TabItem>
+
+        </TabControl>
+
     </Grid>
 </Window>

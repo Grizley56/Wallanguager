@@ -49,12 +49,20 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WpfColorFontDialog, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dependencies\WpfColorFontDialog.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="GeneralWallaperSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -62,6 +70,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GeneralWallaperSettings.xaml.cs">
+      <DependentUpon>GeneralWallaperSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -94,6 +105,23 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\generalSettings.png" />
+    <Resource Include="Content\refreshImage.png" />
+    <Resource Include="Content\enginePause.png" />
+    <Resource Include="Content\engineStart.png" />
+    <Resource Include="Content\uploadImage.png" />
+    <Resource Include="Content\addImage.png" />
+    <Resource Include="Content\removeImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Wallaper1.jpg" />
+    <Resource Include="Images\Wallaper2.jpg" />
+    <Resource Include="Images\Wallaper3.jpg" />
+    <Resource Include="Images\Wallaper4.jpg" />
+    <Resource Include="Images\Wallaper5.jpg" />
+    <Resource Include="Images\Wallaper6.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
