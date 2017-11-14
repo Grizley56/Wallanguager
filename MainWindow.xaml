@@ -6,7 +6,12 @@
         xmlns:xwpf="clr-namespace:WpfColorFontDialog;assembly=WpfColorFontDialog"
         xmlns:local="clr-namespace:Wallanguager"
         mc:Ignorable="d"
-        Title="Wallanguager" Height="650" Width="700">
+        Title="Wallanguager" Height="658" Width="721">
+
+    <Window.Resources>
+        <local:ImageSourceToBoolConverter x:Key="imageToBoolConverter" />
+    </Window.Resources>
+    
     <Grid>
         <Menu x:Name="menu" Height="25" VerticalAlignment="Top" FontFamily="OCR A Extended" FontSize="14" Background="White" BorderBrush="#FFD81B1B" BorderThickness="0">
             <MenuItem Header="_Main" Margin="5 5">
@@ -15,18 +20,18 @@
             </MenuItem>
             <MenuItem Header="_Display">
                 <WrapPanel Width="275">
-                    <Label Content="Wallapers offset" />
-                    <Slider x:Name="wallaperOffset" Minimum="0" Maximum="100" Width="100" Margin="15 2 0 0" Value="30" />
-                    <Label Content="Wallapers size" />
-                    <Slider x:Name="wallaperSize"  Minimum="50" Maximum="300" Width="100" Margin="32 2 0 0" Value="300" />
+                    <Label Content="Wallpapers offset" />
+                    <Slider x:Name="wallpaperOffset" Minimum="0" Maximum="100" Width="100" Margin="15 2 0 0" Value="30" />
+                    <Label Content="Wallpapers size" />
+                    <Slider x:Name="wallpaperSize"  Minimum="50" Maximum="300" Width="100" Margin="32 2 0 0" Value="300" />
                 </WrapPanel>
             </MenuItem>
             <MenuItem Header="_Statistic">
-                
+
             </MenuItem>
         </Menu>
         <TabControl Margin="10,30,10,10" FontFamily="OCR A Extended" FontSize="14" >
-            <TabItem Header="Wallapers">
+            <TabItem Header="Wallpapers">
                 <Grid>
                     <Grid.Background>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -57,15 +62,15 @@
                                 <ColumnDefinition Width="60"/>
                             </Grid.ColumnDefinitions>
 
-                            <Button Grid.Column="0" BorderThickness="0" Height="24" ToolTip="Add wallaper" Margin="0,3,12,3">
+                            <Button Grid.Column="0" BorderThickness="0" Height="24" ToolTip="Add wallpaper" Margin="0,3,12,3" Click="AddWallpaperClick">
                                 <Image Source="Content/addImage.png"></Image>
                             </Button>
 
-                            <Button Grid.Column="1" BorderThickness="0"  Height="24" ToolTip="Remove wallaper" Margin="0,3,12,3">
+                            <Button Grid.Column="1" BorderThickness="0"  Height="24" ToolTip="Remove wallpaper" Margin="0,3,12,3" Click="RemoveWallpaperClick">
                                 <Image Source="Content/removeImage.png"></Image>
                             </Button>
 
-                            <Button Grid.Column="2" BorderThickness="0"  Height="24" ToolTip="Upload wallaper" Margin="0,3,12,3">
+                            <Button Grid.Column="2" BorderThickness="0"  Height="24" ToolTip="Upload wallpaper" Margin="0,3,12,3">
                                 <Image Source="Content/uploadImage.png"></Image>
                             </Button>
                         </Grid>
@@ -105,11 +110,11 @@
                                 <ColumnDefinition Width="60"/>
                                 <ColumnDefinition Width="60"/>
                             </Grid.ColumnDefinitions>
-                            <Button Grid.Column="7" BorderThickness="0" Height="24" ToolTip="General settings" Margin="10,12,9,9" Click="GeneralWallaperSettingsOpen">
+                            <Button Grid.Column="7" BorderThickness="0" Height="24" ToolTip="General settings" Margin="10,12,9,9" Click="GeneralWallpaperSettingsOpen">
                                 <Image Source="Content/GeneralSettings.png"></Image>
                             </Button>
 
-                            <Button Grid.Column="6" BorderThickness="0"  Height="24" ToolTip="Refresh wallaper settings" Margin="10,12,9,9" >
+                            <Button Grid.Column="6" BorderThickness="0"  Height="24" ToolTip="Refresh wallpaper settings" Margin="10,12,9,9" >
                                 <Image Source="Content/refreshImage.png"></Image>
                             </Button>
 
@@ -117,7 +122,7 @@
                                 <Image Source="Content/engineStart.png"></Image>
                             </Button>
 
-                            <Button Grid.Column="4" BorderThickness="0"  Height="24" ToolTip="Refresh wallaper settings" Margin="10,12,9,9" >
+                            <Button Grid.Column="4" BorderThickness="0"  Height="24" ToolTip="Refresh wallpaper settings" Margin="10,12,9,9" >
                                 <Image Source="Content/enginePause.png"></Image>
                             </Button>
 
@@ -138,23 +143,23 @@
                                             <GradientStop Color="#19000000" Offset="1"/>
                                         </LinearGradientBrush>
                                     </Border.Background>
-                                    <DockPanel>
-                                        <Image x:Name="WallaperZoomed"></Image>
+                                    <DockPanel x:Name="WallpaperZoomedContainer">
+                                        <Image x:Name="WallpaperZoomed" MouseMove="ZoomedImageMouseMove" MouseLeftButtonDown="ZoomedImageMouseLeftButtonDown" MouseRightButtonDown="ZoomedImageMouseRightButtonDown"></Image>
                                     </DockPanel>
                                 </Border>
 
-                                <Grid Grid.Row="1">
+                                <Grid Grid.Row="1" IsEnabled="{Binding ElementName=WallpaperZoomed, Path=Source, Converter={StaticResource imageToBoolConverter}}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition  Width="auto"/>
                                         <ColumnDefinition  Width="*"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <xwpf:ColorFontChooser FontFamily="Times New Roman" InnerText="Example: Пример"  Width="Auto" Margin="3,20,0,10" Height="Auto"/>
+                                    <xwpf:ColorFontChooser ColorFontChanged="FontColorChooserColorFontChanged"  x:Name="fontColorChooser" FontFamily="Times New Roman" InnerText="Example: Пример"  Width="Auto" Margin="3,20,0,10" Height="Auto"/>
 
                                     <GroupBox Grid.Column="1" Header="Other" Margin="0,21,0,11">
                                         <WrapPanel>
                                             <Label>Style</Label>
-                                            <ComboBox Width="100">
+                                            <ComboBox Width="100" x:Name="styleChooser" SelectionChanged="StyleChooserSelectionChanged">
                                                 <ListBoxItem Content="Fill"/>
                                                 <ListBoxItem Content="Fit"/>
                                                 <ListBoxItem Content="Stretch"/>
@@ -162,6 +167,8 @@
                                                 <ListBoxItem Content="Center"/>
                                                 <ListBoxItem Content="Span"/>
                                             </ComboBox>
+                                            <CheckBox x:Name="isFontByDefault" FontSize="14" Content="Font by default" Margin="5 10 0 0" Click="IsFontByDefaultClick"/>
+                                            <CheckBox x:Name="isStyleByDefault" FontSize="14" Content="Style by default" Margin="5 10 0 0" Click="IsStyleByDefaultClick"/>
                                         </WrapPanel>
                                     </GroupBox>
 

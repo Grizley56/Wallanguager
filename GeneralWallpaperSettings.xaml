@@ -1,0 +1,57 @@
+﻿<Window x:Class="Wallanguager.GeneralWallpaperSettings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Wallanguager"
+        xmlns:wpfX="clr-namespace:WpfColorFontDialog;assembly=WpfColorFontDialog"
+        mc:Ignorable="d"
+        Title="General settings" Height="350" Width="450" MinWidth="500" MinHeight="350" MaxWidth="500" MaxHeight="350">
+    <Grid>
+        <GroupBox x:Name="groupBox" Header="Settings" Margin="5 5 5 5">
+            <Grid Margin="5,5,5,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <wpfX:ColorFontChooser InnerText="Example : Пример" x:Name="generalFontColorChooser" Grid.Column="0" Margin="0,16,0,8" Height="Auto"/>
+                <GroupBox Grid.Column="1" Header="Other" Margin="7,16,1,53">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="39*"/>
+                            <RowDefinition Height="39*"/>
+                            <RowDefinition Height="104*"/>
+                        </Grid.RowDefinitions>
+
+                        <Label Content="Style" Grid.Row="0"/>
+                        <ComboBox x:Name="generalWallpaperStyleComboBox" Grid.Row="0" Margin="59,2,9,13">
+                            <ListBoxItem Content="Fill"/>
+                            <ListBoxItem Content="Fit"/>
+                            <ListBoxItem Content="Stretch"/>
+                            <ListBoxItem Content="Tile"/>
+                            <ListBoxItem Content="Center"/>
+                            <ListBoxItem Content="Span"/>
+                        </ComboBox>
+                        <Label Grid.Row="1" Content="Format"/>
+                        <TextBox x:Name="generalSignFormatTextBox" Grid.Row="1" Margin="59,2,9,15"/>
+                        <Expander Header="More format info" HorizontalAlignment="Left" Height="82" VerticalAlignment="Top" Grid.Row="2" Width="169" Margin="0,0,-1,0">
+                            <Grid Background="#FFE5E5E5" Width="139">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" ><Label Foreground="#FF1700FF">%w</Label> <Label> - original word</Label></TextBlock>
+                                <TextBlock Grid.Row="1" ><Label Foreground="Red">%t</Label><Label> - translated word</Label></TextBlock>
+                            </Grid>
+                        </Expander>
+
+
+                    </Grid>
+                </GroupBox>
+                <Button x:Name="ButtonSave" IsDefault="True" Content="Save" Grid.Column="1" HorizontalAlignment="Left" Margin="12,239,0,0" VerticalAlignment="Top" Width="75" Click="ButtonSaveClick"/>
+                <Button x:Name="ButtonCancel" IsCancel="True" Content="Cancel" Grid.Column="1" HorizontalAlignment="Left" Margin="102,239,0,0" VerticalAlignment="Top" Width="75" Click="ButtonCancelClick"/>
+            </Grid>
+        </GroupBox>
+
+    </Grid>
+</Window>

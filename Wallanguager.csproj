@@ -35,6 +35,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Easy.Logger, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Easy.Logger.3.1.0\lib\net40\Easy.Logger.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Easy.Logger.Interfaces, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Easy.Logger.Interfaces.1.0.0\lib\net40\Easy.Logger.Interfaces.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -51,7 +63,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="WpfColorFontDialog, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\WpfColorFontDialog.dll</HintPath>
+      <HintPath>..\..\Repositories\WpfColorFont\WpfColorFontDialog\bin\Debug\WpfColorFontDialog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -59,7 +71,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="GeneralWallaperSettings.xaml">
+    <Compile Include="ImageSourceToBoolConverter.cs" />
+    <Compile Include="WallpaperEngine\Signature.cs" />
+    <Compile Include="WallpaperEngine\SignFormat.cs" />
+    <Compile Include="WallpaperEngine\Wallpaper.cs" />
+    <Compile Include="WallpaperEngine\WallpaperAddedEventArgs.cs" />
+    <Compile Include="WallpaperEngine\WallpaperCollection.cs" />
+    <Compile Include="WallpaperEngine\WallpaperController.cs" />
+    <Compile Include="WallpaperEngine\WallpaperRemovedEventArgs.cs" />
+    <Compile Include="WallpaperEngine\WallpaperStyle.cs" />
+    <Page Include="GeneralWallpaperSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -71,8 +92,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GeneralWallaperSettings.xaml.cs">
-      <DependentUpon>GeneralWallaperSettings.xaml</DependentUpon>
+    <Compile Include="GeneralWallpaperSettings.xaml.cs">
+      <DependentUpon>GeneralWallpaperSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -97,6 +118,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -104,7 +126,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Content\generalSettings.png" />
@@ -116,12 +140,27 @@
     <Resource Include="Content\removeImage.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Wallaper1.jpg" />
-    <Resource Include="Images\Wallaper2.jpg" />
-    <Resource Include="Images\Wallaper3.jpg" />
-    <Resource Include="Images\Wallaper4.jpg" />
-    <Resource Include="Images\Wallaper5.jpg" />
-    <Resource Include="Images\Wallaper6.jpg" />
+    <Content Include="Images\Wallaper1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Wallaper2.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Wallaper3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Wallaper4.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Wallaper5.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Wallaper6.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Translation\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
