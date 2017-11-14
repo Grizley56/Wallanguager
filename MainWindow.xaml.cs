@@ -17,7 +17,7 @@ namespace Wallanguager
 		private readonly Dictionary<DependencyProperty, Binding> _bindings = new Dictionary<DependencyProperty, Binding>();
 
 		private readonly WallpaperController _wallpaperController = new WallpaperController(
-			new Uri(Environment.CurrentDirectory + "/Images/"));
+			new Uri(Environment.CurrentDirectory));
 
 		private GeneralWallpaperSettings _settings;
 

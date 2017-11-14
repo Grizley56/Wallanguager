@@ -46,7 +46,8 @@ namespace Wallanguager.WallpaperEngine
 			DirectoryInfo wallpaperDir = new DirectoryInfo(DefaultWallpapersPath.AbsolutePath);
 			foreach(FileInfo file in wallpaperDir.GetFiles())
 			{
-				Wallpapers.Add(GetNewWallpaperByUri(new Uri(file.FullName)));
+				if (file.Extension == ".jpg" || file.Extension == ".png" || file.Extension == ".gid" || file.Extension == ".jpeg")
+					Wallpapers.Add(GetNewWallpaperByUri(new Uri(file.FullName)));
 			}
 		}
 
