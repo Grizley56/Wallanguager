@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
+using Image = System.Windows.Controls.Image;
 
 namespace Wallanguager.WallpaperEngine
 {
@@ -44,9 +45,17 @@ namespace Wallanguager.WallpaperEngine
 		public void LoadDefaultWallpapers()
 		{
 			DirectoryInfo wallpaperDir = new DirectoryInfo(DefaultWallpapersPath.AbsolutePath);
+
+			if (!wallpaperDir.Exists)
+			{
+				Easy.Logger.Log4NetService.Instance.GetLogger<Wallpaper>()
+					.Warn("Default directory dont exist " + wallpaperDir.FullName);
+				return;
+			}
+
 			foreach(FileInfo file in wallpaperDir.GetFiles())
 			{
-				if (file.Extension == ".jpg" || file.Extension == ".png" || file.Extension == ".gid" || file.Extension == ".jpeg")
+				if (file.Extension == ".jpg" || file.Extension == ".png" || file.Extension == ".gif" || file.Extension == ".jpeg")
 					Wallpapers.Add(GetNewWallpaperByUri(new Uri(file.FullName)));
 			}
 		}
