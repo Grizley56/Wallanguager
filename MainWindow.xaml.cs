@@ -7,8 +7,10 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Win32;
+
 using Wallanguager.WallpaperEngine;
 using WpfColorFontDialog;
+using Easy.Logger;
 
 namespace Wallanguager
 {
@@ -17,7 +19,7 @@ namespace Wallanguager
 		private readonly Dictionary<DependencyProperty, Binding> _bindings = new Dictionary<DependencyProperty, Binding>();
 
 		private readonly WallpaperController _wallpaperController = new WallpaperController(
-			new Uri(Environment.CurrentDirectory));
+			new Uri(Environment.CurrentDirectory + "/Images"));
 
 		private GeneralWallpaperSettings _settings;
 
@@ -35,7 +37,16 @@ namespace Wallanguager
 		{
 			InitializeComponent();
 			InitializeBindings();
-			InitializeController();
+
+			try
+			{
+				InitializeController();
+			}
+			catch (Exception e)
+			{
+				Log4NetService.Instance.GetLogger<MainWindow>().Fatal(e);
+				throw;
+			}
 		}
 
 		private void InitializeBindings()
@@ -80,10 +91,47 @@ namespace Wallanguager
 			return screenPosition * scaleMatrix;
 		}
 
+		private void UpdateWallpaperZoomedImage(Point? position = null)
+		{
+			if (_selectedWallpaper == null)
+			{
+				Log4NetService.Instance.GetLogger<MainWindow>()
+					.Error($"{nameof(UpdateWallpaperZoomedImage)} was called, " +
+								 $"but {nameof(_selectedWallpaper)} is not defined");
+				return;
+				//throw new NullReferenceException();
+			}
+
+			if (!_selectedWallpaper.IsFixed && !position.HasValue)
+			{
+				Log4NetService.Instance.GetLogger<MainWindow>()
+					.Fatal($"call {nameof(UpdateWallpaperZoomedImage)} " +
+					       $"with position as null parameter [as UnFixedWallaper]");
+				throw new ArgumentNullException(nameof(position));
+			}
+
+			try
+			{
+				WallpaperZoomed.Source = _selectedWallpaper.IsFixed
+					? _selectedWallpaper.GetFixedSignedImage(_defaultSignature)
+					: _selectedWallpaper.GetSignedImage(position.Value, _defaultSignature);
+			}
+			catch (Exception e)
+			{
+				Log4NetService.Instance.GetLogger<MainWindow>().Fatal(e);
+				throw;
+			}
+		}
+
 		private void Wallpapers_WallpaperRemoved(object sender, WallpaperRemovedEventArgs e)
 		{
 			images.Children.Remove(e.RemovedItem.UIElementImage);
 			e.RemovedItem.UIElementImage.MouseLeftButtonDown -= Image_MouseLeftButtonDown; // GC optimize
+
+#if DEBUG
+			Easy.Logger.Log4NetService.Instance.GetLogger<Wallpaper>()
+				.Debug($"Wallaper was removed \"{e.RemovedItem.SourceImage.UriSource}\"");
+#endif
 		}
 
 		private void Wallpapers_WallpaperAdded(object sender, WallpaperAddedEventArgs e)
@@ -93,6 +141,11 @@ namespace Wallanguager
 
 			foreach (var pair in _bindings)
 				e.AddedItem.UIElementImage.SetBinding(pair.Key, pair.Value);
+
+#if DEBUG
+			Easy.Logger.Log4NetService.Instance.GetLogger<Wallpaper>()
+				.Debug($"Wallaper was added \"{e.AddedItem.SourceImage.UriSource}\"");
+#endif
 		}
 
 		private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -112,20 +165,6 @@ namespace Wallanguager
 				UpdateWallpaperZoomedImage();
 			else
 				WallpaperZoomed.Source = _selectedWallpaper.SourceImage;
-		}
-
-		private void UpdateWallpaperZoomedImage(Point? position = null)
-		{
-			if (_selectedWallpaper == null)
-				throw new NullReferenceException();
-
-			if (!_selectedWallpaper.IsFixed && !position.HasValue)
-				throw new ArgumentNullException(nameof(position));
-
-			if (_selectedWallpaper.IsFixed)
-				WallpaperZoomed.Source = _selectedWallpaper.GetFixedSignedImage(_defaultSignature);
-			else
-				WallpaperZoomed.Source = _selectedWallpaper.GetSignedImage(position.Value, _defaultSignature);
 		}
 
 		private void GeneralWallpaperSettingsOpen(object sender, RoutedEventArgs e)

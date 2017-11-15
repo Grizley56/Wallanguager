@@ -13,6 +13,6 @@ namespace Wallanguager
 	/// </summary>
 	public partial class App : Application
 	{
-
+		
 	}
 }
