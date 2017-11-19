@@ -47,6 +47,10 @@
       <HintPath>packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -72,7 +76,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ImageSourceToBoolConverter.cs" />
+    <Compile Include="GroupWindow.xaml.cs">
+      <DependentUpon>GroupWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\ImageSourceToBoolConverter.cs" />
+    <Compile Include="Learning\Language.cs" />
+    <Compile Include="Learning\Phrase.cs" />
+    <Compile Include="Learning\PhrasesCollection.cs" />
+    <Compile Include="Learning\PhrasesGroup.cs" />
     <Compile Include="WallpaperEngine\Signature.cs" />
     <Compile Include="WallpaperEngine\SignFormat.cs" />
     <Compile Include="WallpaperEngine\Wallpaper.cs" />
@@ -82,6 +93,10 @@
     <Compile Include="WallpaperEngine\WallpaperRemovedEventArgs.cs" />
     <Compile Include="WallpaperEngine\WallpaperStyle.cs" />
     <Page Include="GeneralWallpaperSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GroupWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -119,9 +134,16 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Content\addGroup.png" />
+    <Resource Include="Content\deleteGroup.png" />
+    <Resource Include="Content\updateGroup.png" />
+    <Resource Include="Content\phraseAdd.png" />
+    <Resource Include="Content\phraseDelete.png" />
     <Content Include="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Languages.json" />
+    <EmbeddedResource Include="GroupThemes.json" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
+using Wallanguager.Learning;
 using Image = System.Windows.Controls.Image;
 
 namespace Wallanguager.WallpaperEngine
@@ -18,6 +20,8 @@ namespace Wallanguager.WallpaperEngine
 		//TBD : List of supported words
 
 		public WallpaperCollection Wallpapers { get; private set; } = new WallpaperCollection();
+
+		public PhrasesCollection Phrases { get; private set; } = new PhrasesCollection();
 
 		public Uri DefaultWallpapersPath { get; private set; }
 

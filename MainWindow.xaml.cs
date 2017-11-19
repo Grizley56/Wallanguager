@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,6 +11,7 @@ using System.Windows.Media;
 using Microsoft.Win32;
 
 using Wallanguager.WallpaperEngine;
+using Wallanguager.Learning;
 using WpfColorFontDialog;
 using Easy.Logger;
 
@@ -23,9 +26,12 @@ namespace Wallanguager
 
 		private GeneralWallpaperSettings _settings;
 
+		private GroupAddWindow _groupWindow;
+
 		private Wallpaper _selectedWallpaper;
 
-		private Signature _defaultSignature = new Signature("Example", "Пример");
+		private readonly Signature _defaultSignature = new Signature("Example", "Пример");
+
 
 		private readonly OpenFileDialog _fileDialog = new OpenFileDialog
 		{
@@ -33,6 +39,7 @@ namespace Wallanguager
 			Multiselect = true
 		};
 
+		
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -47,7 +54,20 @@ namespace Wallanguager
 				Log4NetService.Instance.GetLogger<MainWindow>().Fatal(e);
 				throw;
 			}
+
+			// For tests
+			Language a = (Application.Current.Properties["Languages"] as Language[])[0];
+			Language b = (Application.Current.Properties["Languages"] as Language[])[1];
+			Language c = (Application.Current.Properties["Languages"] as Language[])[2];
+
+			_wallpaperController.Phrases.AddGroup(new PhrasesGroup("Test #1", "Mixed", a, b));
+			_wallpaperController.Phrases.AddGroup(new PhrasesGroup("Test #2", "Body", b, c));
+			_wallpaperController.Phrases.AddGroup(new PhrasesGroup("Test #3", "Sport", c, a));
+			// ---------
+
+			GroupListView.ItemsSource = _wallpaperController.Phrases;
 		}
+
 
 		private void InitializeBindings()
 		{
@@ -99,7 +119,6 @@ namespace Wallanguager
 					.Error($"{nameof(UpdateWallpaperZoomedImage)} was called, " +
 								 $"but {nameof(_selectedWallpaper)} is not defined");
 				return;
-				//throw new NullReferenceException();
 			}
 
 			if (!_selectedWallpaper.IsFixed && !position.HasValue)
@@ -279,5 +298,68 @@ namespace Wallanguager
 			WallpaperZoomed.Source = null;
 		}
 
+
+
+
+		private void AddGroupClick(object sender, RoutedEventArgs e)
+		{
+			_groupWindow = new GroupAddWindow((newGroup)
+				=> GroupAddUpdateRequirement(newGroup));
+
+			bool? result = _groupWindow.ShowDialog();
+
+			if (result != null && result.Value)
+				_wallpaperController.Phrases.AddGroup(new PhrasesGroup(_groupWindow.Group.GroupName,
+					_groupWindow.Group.GroupTheme, _groupWindow.Group.ToLanguage, _groupWindow.Group.ToLanguage));
+		}
+
+		private void RemoveGroupClick(object sender, RoutedEventArgs e)
+		{
+			if ((GroupListView.SelectedItem as PhrasesGroup) == null)
+			{
+				MessageBox.Show("Select any group", "Fail");
+				return;
+			}
+
+			if ((MessageBox.Show("Are you sure you want to delete this group?", "Confirm action",
+				     MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.Yes) == MessageBoxResult.Yes))
+				_wallpaperController.Phrases.RemoveGroup((PhrasesGroup)GroupListView.SelectedItem);
+		}
+
+		private void UpdateGroupClick(object sender, RoutedEventArgs e)
+		{
+			if((GroupListView.SelectedItem as PhrasesGroup) == null)
+			{
+				MessageBox.Show("Select any group", "Fail");
+				return;
+			}
+
+			PhrasesGroup oldGroup = (PhrasesGroup) GroupListView.SelectedItem;
+
+			_groupWindow = new GroupAddWindow((newGroup)
+				=> GroupAddUpdateRequirement(newGroup, oldGroup), oldGroup);
+
+			bool? result = _groupWindow.ShowDialog();
+
+			if (result == null || !result.Value)
+				return;
+
+			oldGroup.GroupName = _groupWindow.Group.GroupName;
+			oldGroup.GroupTheme = _groupWindow.Group.GroupTheme;
+			oldGroup.FromLanguage = _groupWindow.Group.FromLanguage;
+			oldGroup.ToLanguage = _groupWindow.Group.ToLanguage;
+		}
+
+		private bool GroupAddUpdateRequirement(PhrasesGroup newGroup, PhrasesGroup oldGroup = null)
+		{
+			return _wallpaperController.Phrases.All<PhrasesGroup>(delegate (PhrasesGroup j)
+			{
+				if (j.GroupName != newGroup.GroupName || j == oldGroup)
+					return true;
+
+				MessageBox.Show($"Group {newGroup.GroupName} already exist!", "Fail");
+				return false;
+			});
+		}
 	}
 }

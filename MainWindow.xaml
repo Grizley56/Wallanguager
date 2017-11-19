@@ -5,13 +5,37 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xwpf="clr-namespace:WpfColorFontDialog;assembly=WpfColorFontDialog"
         xmlns:local="clr-namespace:Wallanguager"
+        xmlns:converters="clr-namespace:Wallanguager.Converters"
         mc:Ignorable="d"
         Title="Wallanguager" Height="658" Width="721">
 
     <Window.Resources>
-        <local:ImageSourceToBoolConverter x:Key="imageToBoolConverter" />
+        <converters:ImageSourceToBoolConverter x:Key="ImageToBoolConverter" />
+
+        <Style x:Key="groupControlButton" TargetType="{x:Type Button}">
+            <Setter Property="MaxWidth" Value="40"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Cursor" Value="Hand"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="Transparent" BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="MaxWidth" Value="45"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
     </Window.Resources>
-    
+
     <Grid>
         <Menu x:Name="menu" Height="25" VerticalAlignment="Top" FontFamily="OCR A Extended" FontSize="14" Background="White" BorderBrush="#FFD81B1B" BorderThickness="0">
             <MenuItem Header="_Main" Margin="5 5">
@@ -148,7 +172,7 @@
                                     </DockPanel>
                                 </Border>
 
-                                <Grid Grid.Row="1" IsEnabled="{Binding ElementName=WallpaperZoomed, Path=Source, Converter={StaticResource imageToBoolConverter}}">
+                                <Grid Grid.Row="1" IsEnabled="{Binding ElementName=WallpaperZoomed, Path=Source, Converter={StaticResource ImageToBoolConverter}}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition  Width="auto"/>
                                         <ColumnDefinition  Width="*"/>
@@ -171,10 +195,7 @@
                                             <CheckBox x:Name="isStyleByDefault" FontSize="14" Content="Style by default" Margin="5 10 0 0" Click="IsStyleByDefaultClick"/>
                                         </WrapPanel>
                                     </GroupBox>
-
                                 </Grid>
-
-
                             </Grid>
                         </GroupBox>
 
@@ -183,7 +204,85 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Unnamed"></TabItem>
+            <TabItem Header="Unnamed">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <GroupBox Grid.Row="0" Header="Phrase groups " Margin="15">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="556*" />
+                                <ColumnDefinition Width="89*" />
+                            </Grid.ColumnDefinitions>
+                            <ListView  Margin="5" x:Name="GroupListView" FontFamily="Sitka Banner" BorderBrush="#FFBCBEC1">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Name"  DisplayMemberBinding="{Binding GroupName}" Width="auto" />
+                                        <GridViewColumn Header="Theme" DisplayMemberBinding="{Binding GroupTheme}" Width="auto"/>
+                                        <GridViewColumn Header="From"  DisplayMemberBinding="{Binding FromLanguage.FullName}" Width="auto"/>
+                                        <GridViewColumn Header="To"    DisplayMemberBinding="{Binding ToLanguage.FullName}" Width="auto"/>
+                                        <GridViewColumn Header="Count" DisplayMemberBinding="{Binding PhrasesCount}" Width="50"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+
+                            <Grid Height="auto" Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Button Click="AddGroupClick" Grid.Row="0" Style="{StaticResource groupControlButton}">
+                                    <Image Source="Content/addGroup.png" />
+                                </Button>
+                                <Button Click="RemoveGroupClick" Grid.Row="1" Style="{StaticResource groupControlButton}">
+                                    <Image Source="Content/deleteGroup.png" />
+                                </Button>
+                                <Button Click="UpdateGroupClick" Grid.Row="2" Style="{StaticResource groupControlButton}">
+                                    <Image Source="Content/updateGroup.png" />
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </GroupBox>
+
+
+                    <GroupBox Grid.Row="1" Header="Phrases" Margin="15">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="296*" />
+                                <ColumnDefinition Width="60*" />
+                                <ColumnDefinition Width="289*" />
+                            </Grid.ColumnDefinitions>
+
+                            <ListBox Grid.Column="0" Margin="10">
+
+                            </ListBox>
+                            <Grid Height="auto" Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Button Grid.Row="1" Style="{StaticResource groupControlButton}">
+                                    <Image Source="Content/phraseAdd.png" />
+                                </Button>
+                                <Button Grid.Row="2" Style="{StaticResource groupControlButton}">
+                                    <Image Source="Content/phraseDelete.png" />
+                                </Button>
+                            </Grid>
+                            <Rectangle Margin="10" Grid.Column="2" StrokeThickness="1" Stroke="Black">
+                                
+                            </Rectangle>
+                            <TextBlock Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Free space for soon</TextBlock>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
 
         </TabControl>
 
