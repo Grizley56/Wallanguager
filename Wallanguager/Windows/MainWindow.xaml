@@ -1,4 +1,4 @@
-﻿<Window x:Class="Wallanguager.MainWindow"
+﻿<Window x:Class="Wallanguager.Windows.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -89,15 +89,15 @@
                             </Grid.ColumnDefinitions>
 
                             <Button Grid.Column="0" BorderThickness="0" Height="24" ToolTip="Add wallpaper" Margin="0,3,12,3" Click="AddWallpaperClick">
-                                <Image Source="Content/addImage.png"></Image>
+                                <Image Source="../Content/Images/addImage.png"></Image>
                             </Button>
 
                             <Button Grid.Column="1" BorderThickness="0"  Height="24" ToolTip="Remove wallpaper" Margin="0,3,12,3" Click="RemoveWallpaperClick">
-                                <Image Source="Content/removeImage.png"></Image>
+                                <Image Source="../Content/Images/removeImage.png"></Image>
                             </Button>
 
                             <Button Grid.Column="2" BorderThickness="0"  Height="24" ToolTip="Upload wallpaper" Margin="0,3,12,3">
-                                <Image Source="Content/uploadImage.png"></Image>
+                                <Image Source="../Content/Images/uploadImage.png"></Image>
                             </Button>
                         </Grid>
 
@@ -137,19 +137,19 @@
                                 <ColumnDefinition Width="60"/>
                             </Grid.ColumnDefinitions>
                             <Button Grid.Column="7" BorderThickness="0" Height="24" ToolTip="General settings" Margin="10,12,9,9" Click="GeneralWallpaperSettingsOpen">
-                                <Image Source="Content/GeneralSettings.png"></Image>
+                                <Image Source="../Content/Images/GeneralSettings.png"></Image>
                             </Button>
 
                             <Button Grid.Column="6" BorderThickness="0"  Height="24" ToolTip="Refresh wallpaper settings" Margin="10,12,9,9" >
-                                <Image Source="Content/refreshImage.png"></Image>
+                                <Image Source="../Content/Images/refreshImage.png"></Image>
                             </Button>
 
                             <Button Grid.Column="3" BorderThickness="0" Height="24" ToolTip="General settings" Margin="10,12,9,9">
-                                <Image Source="Content/engineStart.png"></Image>
+                                <Image Source="../Content/Images/engineStart.png"></Image>
                             </Button>
 
                             <Button Grid.Column="4" BorderThickness="0"  Height="24" ToolTip="Refresh wallpaper settings" Margin="10,12,9,9" >
-                                <Image Source="Content/enginePause.png"></Image>
+                                <Image Source="../Content/Images/enginePause.png"></Image>
                             </Button>
 
                         </Grid>
@@ -238,13 +238,13 @@
                                     <RowDefinition />
                                 </Grid.RowDefinitions>
                                 <Button Click="AddGroupClick" Grid.Row="0" Style="{StaticResource groupControlButton}">
-                                    <Image Source="Content/addGroup.png" />
+                                    <Image Source="../Content/Images/addGroup.png" />
                                 </Button>
                                 <Button Click="RemoveGroupClick" Grid.Row="1" Style="{StaticResource groupControlButton}">
-                                    <Image Source="Content/deleteGroup.png" />
+                                    <Image Source="../Content/Images/deleteGroup.png" />
                                 </Button>
                                 <Button Click="UpdateGroupClick" Grid.Row="2" Style="{StaticResource groupControlButton}">
-                                    <Image Source="Content/updateGroup.png" />
+                                    <Image Source="../Content/Images/updateGroup.png" />
                                 </Button>
                             </Grid>
                         </Grid>
@@ -278,7 +278,7 @@
                                              Converter={StaticResource SelectedItemToIsEnabledConverter}
                                            }"
                                         Style="{StaticResource groupControlButton}">
-                                    <Image Source="Content/phraseAdd.png" />
+                                    <Image Source="../Content/Images/phraseAdd.png" />
                                 </Button>
                                 <Button Click="RemovePhraseClick" Grid.Row="2"
                                         IsEnabled="{
@@ -287,7 +287,7 @@
                                              Converter={StaticResource SelectedItemToIsEnabledConverter}
                                            }"
                                         Style="{StaticResource groupControlButton}">
-                                    <Image Source="Content/phraseDelete.png" />
+                                    <Image Source="../Content/Images/phraseDelete.png" />
                                 </Button>
                             </Grid>
                             <Grid Grid.Column="2">

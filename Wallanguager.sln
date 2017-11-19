@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wallanguager", "Wallanguager.csproj", "{2955550E-EA71-46C1-800D-6687B352D988}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wallanguager", "Wallanguager\Wallanguager.csproj", "{2955550E-EA71-46C1-800D-6687B352D988}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreeTranslator", "FreeTranslator\FreeTranslator.csproj", "{E86241B6-B730-48F9-88FF-2B724728AF05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{2955550E-EA71-46C1-800D-6687B352D988}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2955550E-EA71-46C1-800D-6687B352D988}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2955550E-EA71-46C1-800D-6687B352D988}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E86241B6-B730-48F9-88FF-2B724728AF05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E86241B6-B730-48F9-88FF-2B724728AF05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E86241B6-B730-48F9-88FF-2B724728AF05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E86241B6-B730-48F9-88FF-2B724728AF05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

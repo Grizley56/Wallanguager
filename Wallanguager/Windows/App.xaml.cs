@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Reflection;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
 using System.Windows;
-
 using Newtonsoft.Json;
 using Wallanguager.Learning;
 
-namespace Wallanguager
+namespace Wallanguager.Windows
 {
 	/// <summary>
 	/// Логика взаимодействия для App.xaml
@@ -26,10 +20,10 @@ namespace Wallanguager
 			try
 			{
 				GroupThemes = JsonConvert
-					.DeserializeObject<string[]>(GetResourceString("Wallanguager.GroupThemes.json"));
+					.DeserializeObject<string[]>(GetResourceString("Wallanguager.Content.Json.GroupThemes.json"));
 
 				Languages = JsonConvert
-					.DeserializeObject<Language[]>(GetResourceString("Wallanguager.Languages.json"));
+					.DeserializeObject<Language[]>(GetResourceString("Wallanguager.Content.Json.Languages.json"));
 			}
 			catch (Exception ex)
 			{

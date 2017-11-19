@@ -14,6 +14,21 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -66,18 +81,17 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="WpfColorFontDialog, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Repositories\WpfColorFont\WpfColorFontDialog\bin\Debug\WpfColorFontDialog.dll</HintPath>
+    <Reference Include="WpfColorFontDialog">
+      <HintPath>Dependencies\WpfColorFontDialog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <ApplicationDefinition Include="Windows\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\SelectedItemToIsEnabledConverter.cs" />
-    <Compile Include="GroupWindow.xaml.cs">
+    <Compile Include="Windows\GroupWindow.xaml.cs">
       <DependentUpon>GroupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\ImageSourceToBoolConverter.cs" />
@@ -94,26 +108,26 @@
     <Compile Include="WallpaperEngine\WallpaperController.cs" />
     <Compile Include="WallpaperEngine\WallpaperRemovedEventArgs.cs" />
     <Compile Include="WallpaperEngine\WallpaperStyle.cs" />
-    <Page Include="GeneralWallpaperSettings.xaml">
+    <Page Include="Windows\GeneralWallpaperSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GroupWindow.xaml">
+    <Page Include="Windows\GroupWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="App.xaml.cs">
+    <Compile Include="Windows\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GeneralWallpaperSettings.xaml.cs">
+    <Compile Include="Windows\GeneralWallpaperSettings.xaml.cs">
       <DependentUpon>GeneralWallpaperSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -136,16 +150,16 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Resource Include="Content\addGroup.png" />
-    <Resource Include="Content\deleteGroup.png" />
-    <Resource Include="Content\updateGroup.png" />
-    <Resource Include="Content\phraseAdd.png" />
-    <Resource Include="Content\phraseDelete.png" />
+    <Resource Include="Content\Images\addGroup.png" />
+    <Resource Include="Content\Images\deleteGroup.png" />
+    <Resource Include="Content\Images\updateGroup.png" />
+    <Resource Include="Content\Images\phraseAdd.png" />
+    <Resource Include="Content\Images\phraseDelete.png" />
     <Content Include="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="Languages.json" />
-    <EmbeddedResource Include="GroupThemes.json" />
+    <EmbeddedResource Include="Content\Json\Languages.json" />
+    <EmbeddedResource Include="Content\Json\GroupThemes.json" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -159,16 +173,34 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Content\generalSettings.png" />
-    <Resource Include="Content\refreshImage.png" />
-    <Resource Include="Content\enginePause.png" />
-    <Resource Include="Content\engineStart.png" />
-    <Resource Include="Content\uploadImage.png" />
-    <Resource Include="Content\addImage.png" />
-    <Resource Include="Content\removeImage.png" />
+    <Resource Include="Content\Images\generalSettings.png" />
+    <Resource Include="Content\Images\refreshImage.png" />
+    <Resource Include="Content\Images\enginePause.png" />
+    <Resource Include="Content\Images\engineStart.png" />
+    <Resource Include="Content\Images\uploadImage.png" />
+    <Resource Include="Content\Images\addImage.png" />
+    <Resource Include="Content\Images\removeImage.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Translation\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6 %28x86 и x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FreeTranslator\FreeTranslator.csproj">
+      <Project>{e86241b6-b730-48f9-88ff-2b724728af05}</Project>
+      <Name>FreeTranslator</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

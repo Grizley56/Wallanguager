@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,14 +7,13 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using Microsoft.Win32;
-
-using Wallanguager.WallpaperEngine;
-using Wallanguager.Learning;
-using WpfColorFontDialog;
 using Easy.Logger;
+using Microsoft.Win32;
+using Wallanguager.Learning;
+using Wallanguager.WallpaperEngine;
+using WpfColorFontDialog;
 
-namespace Wallanguager
+namespace Wallanguager.Windows
 {
 	public partial class MainWindow : Window
 	{
