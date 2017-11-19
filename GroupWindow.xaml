@@ -5,23 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Wallanguager"
         mc:Ignorable="d"
-        Title="New Group" Height="222" Width="239" ResizeMode="NoResize">
+        Title="New Group" Height="231" Width="243" ResizeMode="NoResize">
     <Canvas>
-        <Label Canvas.Left="15" Canvas.Top="9">Group name:</Label>
-        <Label Canvas.Top="39" Canvas.Left="15">Group theme:</Label>
-        <Label Canvas.Top="69" Canvas.Left="15">From language:</Label>
-        <Label Canvas.Top="99" Canvas.Left="15">To language:</Label>
+        <Label Canvas.Top="10" Canvas.Left="15">Group name:</Label>
+        <Label Canvas.Top="45" Canvas.Left="15">Group theme:</Label>
+        <Label Canvas.Top="75" Canvas.Left="15">From language:</Label>
+        <Label Canvas.Top="105" Canvas.Left="15">To language:</Label>
 
-        <TextBox x:Name="groupName" Width="100" Height="20" Canvas.Left="110" Canvas.Top="14"></TextBox>
-        <ComboBox x:Name="groupTheme" Width="100" Height="20" Canvas.Left="110" Canvas.Top="44"
+        <TextBox x:Name="groupName" Width="100" Height="23" Canvas.Left="110" Canvas.Top="14"></TextBox>
+        <ComboBox x:Name="groupTheme" Width="100" Height="23" Canvas.Left="110" Canvas.Top="47"
                   ItemsSource="{Binding Path=Properties[GroupThemes], Source={x:Static Application.Current}}">
         </ComboBox>
-        <ComboBox x:Name="groupFromLanguage" Width="100" Height="20" Canvas.Left="110" Canvas.Top="74"
+        <ComboBox x:Name="groupFromLanguage" Width="100" Height="23" Canvas.Left="110" Canvas.Top="77"
                   ItemsSource="{Binding Path=Properties[Languages], Source={x:Static Application.Current}}"
                   DisplayMemberPath="FullName" SelectedValuePath="ISO639" >
             
         </ComboBox>
-        <ComboBox x:Name="groupToLanguage" Width="100" Height="20" Canvas.Left="110" Canvas.Top="104"
+        <ComboBox x:Name="groupToLanguage" Width="100" Height="23" Canvas.Left="110" Canvas.Top="107"
                   ItemsSource="{Binding Path=Properties[Languages], Source={x:Static Application.Current}}"
                   DisplayMemberPath="FullName"  SelectedValuePath="ISO639" >
         </ComboBox>

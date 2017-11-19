@@ -1,19 +1,63 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
+using Wallanguager.Annotations;
 
 namespace Wallanguager.Learning
 {
-	public class PhrasesGroup : IEnumerable<Phrase>
+	public class PhrasesGroup : IEnumerable<Phrase>, INotifyPropertyChanged
 	{
-		public Language ToLanguage { get; set; }
-		public Language FromLanguage { get; set; }
-		public string GroupTheme { get; set; }
-		public string GroupName { get; set; }
+		private List<Phrase> _phrases;
+		private Language _toLanguage;
+		private Language _fromLanguage;
+		private string _groupTheme;
+		private string _groupName;
+
+		public Language ToLanguage
+		{
+			get { return _toLanguage; }
+			set
+			{
+				_toLanguage = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public Language FromLanguage
+		{
+			get { return _fromLanguage; }
+			set
+			{
+				_fromLanguage = value; 
+				OnPropertyChanged();
+			}
+		}
+
+		public string GroupTheme
+		{
+			get { return _groupTheme; }
+			set
+			{
+				_groupTheme = value; 
+				OnPropertyChanged();
+			}
+		}
+
+		public string GroupName
+		{
+			get { return _groupName; }
+			set
+			{
+				_groupName = value; 
+				OnPropertyChanged();
+			}
+		}
 
 		public Phrase this[int index]
 		{
@@ -22,8 +66,6 @@ namespace Wallanguager.Learning
 		}
 
 		public int PhrasesCount => _phrases.Count;
-
-		private List<Phrase> _phrases;
 
 		public PhrasesGroup(string groupName, string groupTheme, Language toLanguage, 
 			Language fromLanguage = null, IEnumerable<Phrase> phrases = null)
@@ -57,5 +99,12 @@ namespace Wallanguager.Learning
 			       $"Phrases count: {PhrasesCount}";
 		}
 
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
 	}
 }

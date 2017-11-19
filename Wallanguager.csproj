@@ -84,6 +84,7 @@
     <Compile Include="Learning\Phrase.cs" />
     <Compile Include="Learning\PhrasesCollection.cs" />
     <Compile Include="Learning\PhrasesGroup.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="WallpaperEngine\Signature.cs" />
     <Compile Include="WallpaperEngine\SignFormat.cs" />
     <Compile Include="WallpaperEngine\Wallpaper.cs" />

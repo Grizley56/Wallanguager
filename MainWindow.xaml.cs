@@ -60,9 +60,9 @@ namespace Wallanguager
 			Language b = (Application.Current.Properties["Languages"] as Language[])[1];
 			Language c = (Application.Current.Properties["Languages"] as Language[])[2];
 
-			_wallpaperController.Phrases.AddGroup(new PhrasesGroup("Test #1", "Mixed", a, b));
-			_wallpaperController.Phrases.AddGroup(new PhrasesGroup("Test #2", "Body", b, c));
-			_wallpaperController.Phrases.AddGroup(new PhrasesGroup("Test #3", "Sport", c, a));
+			_wallpaperController.Phrases.Add(new PhrasesGroup("Test #1", "Mixed", a, b));
+			_wallpaperController.Phrases.Add(new PhrasesGroup("Test #2", "Body", b, c));
+			_wallpaperController.Phrases.Add(new PhrasesGroup("Test #3", "Sport", c, a));
 			// ---------
 
 			GroupListView.ItemsSource = _wallpaperController.Phrases;
@@ -308,9 +308,13 @@ namespace Wallanguager
 
 			bool? result = _groupWindow.ShowDialog();
 
-			if (result != null && result.Value)
-				_wallpaperController.Phrases.AddGroup(new PhrasesGroup(_groupWindow.Group.GroupName,
-					_groupWindow.Group.GroupTheme, _groupWindow.Group.ToLanguage, _groupWindow.Group.ToLanguage));
+			if (result == null || !result.Value)
+				return;
+
+			_wallpaperController.Phrases.Add(new PhrasesGroup(_groupWindow.Group.GroupName,
+				_groupWindow.Group.GroupTheme, _groupWindow.Group.ToLanguage, _groupWindow.Group.ToLanguage));
+
+			UpdateGridViewColumnsSize(GroupGridViewColumns);
 		}
 
 		private void RemoveGroupClick(object sender, RoutedEventArgs e)
@@ -323,7 +327,11 @@ namespace Wallanguager
 
 			if ((MessageBox.Show("Are you sure you want to delete this group?", "Confirm action",
 				     MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.Yes) == MessageBoxResult.Yes))
-				_wallpaperController.Phrases.RemoveGroup((PhrasesGroup)GroupListView.SelectedItem);
+			{
+				_wallpaperController.Phrases.Remove((PhrasesGroup)GroupListView.SelectedItem);
+				UpdateGridViewColumnsSize(GroupGridViewColumns);
+			}
+
 		}
 
 		private void UpdateGroupClick(object sender, RoutedEventArgs e)
@@ -348,6 +356,8 @@ namespace Wallanguager
 			oldGroup.GroupTheme = _groupWindow.Group.GroupTheme;
 			oldGroup.FromLanguage = _groupWindow.Group.FromLanguage;
 			oldGroup.ToLanguage = _groupWindow.Group.ToLanguage;
+
+			UpdateGridViewColumnsSize(GroupGridViewColumns);
 		}
 
 		private bool GroupAddUpdateRequirement(PhrasesGroup newGroup, PhrasesGroup oldGroup = null)
@@ -360,6 +370,20 @@ namespace Wallanguager
 				MessageBox.Show($"Group {newGroup.GroupName} already exist!", "Fail");
 				return false;
 			});
+		}
+
+
+
+		private static void UpdateGridViewColumnsSize(GridView gridView)
+		{
+			foreach (GridViewColumn c in gridView.Columns)
+			{
+				if (double.IsNaN(c.Width))
+				{
+					c.Width = c.ActualWidth;
+				}
+				c.Width = double.NaN;
+			}
 		}
 	}
 }

@@ -219,7 +219,7 @@
                             </Grid.ColumnDefinitions>
                             <ListView  Margin="5" x:Name="GroupListView" FontFamily="Sitka Banner" BorderBrush="#FFBCBEC1">
                                 <ListView.View>
-                                    <GridView>
+                                    <GridView x:Name="GroupGridViewColumns">
                                         <GridViewColumn Header="Name"  DisplayMemberBinding="{Binding GroupName}" Width="auto" />
                                         <GridViewColumn Header="Theme" DisplayMemberBinding="{Binding GroupTheme}" Width="auto"/>
                                         <GridViewColumn Header="From"  DisplayMemberBinding="{Binding FromLanguage.FullName}" Width="auto"/>

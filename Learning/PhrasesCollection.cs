@@ -2,41 +2,59 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Wallanguager.Learning
 {
-	public class PhrasesCollection: IEnumerable<PhrasesGroup>
+	public sealed class PhrasesCollection: ObservableCollection<PhrasesGroup>
 	{
-		public PhrasesGroup this[string key] => _phrasesGroups.FirstOrDefault(i => i.GroupName == key);
-		public PhrasesGroup this[int index] => _phrasesGroups[index];
+		public PhrasesGroup this[string key] => Items.FirstOrDefault(i => i.GroupName == key);
 
-		private List<PhrasesGroup> _phrasesGroups = new List<PhrasesGroup>();
-
-		public bool AddGroup(PhrasesGroup value)
+		public PhrasesCollection()
 		{
-			if (_phrasesGroups.Exists(i => i.GroupName == value.GroupName))
+			CollectionChanged += PhrasesCollection_CollectionChanged;
+		}
+
+		private void PhrasesCollection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			//TODO: skip the method if it is possible
+
+			if (e.NewItems != null)
+			{
+				foreach (var item in e.NewItems)
+				{
+					((INotifyPropertyChanged)item).PropertyChanged += ItemPropertyChanged;
+				}
+			}
+			if (e.OldItems != null)
+			{
+				foreach (var item in e.OldItems)
+				{
+					((INotifyPropertyChanged)item).PropertyChanged -= ItemPropertyChanged;
+				}
+			}
+		}
+
+		public new bool Add(PhrasesGroup value)
+		{
+			if (Items.ToList().Exists(i => i.GroupName == value.GroupName))
 				return false;
-			
-			_phrasesGroups.Add(value);
+
+			base.Add(value);
 			return true;
 		}
 
-		public bool RemoveGroup(PhrasesGroup group)
+		private void ItemPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			return _phrasesGroups.Remove(group);
+			NotifyCollectionChangedEventArgs args = new NotifyCollectionChangedEventArgs(
+				NotifyCollectionChangedAction.Replace, sender, sender, IndexOf((PhrasesGroup)sender));
+
+			OnCollectionChanged(args);
 		}
 
-		public IEnumerator<PhrasesGroup> GetEnumerator()
-		{
-			return ((IEnumerable<PhrasesGroup>)_phrasesGroups).GetEnumerator();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return ((IEnumerable<PhrasesGroup>)_phrasesGroups).GetEnumerator();
-		}
 	}
 }
