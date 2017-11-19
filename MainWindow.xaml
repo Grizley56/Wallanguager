@@ -6,11 +6,13 @@
         xmlns:xwpf="clr-namespace:WpfColorFontDialog;assembly=WpfColorFontDialog"
         xmlns:local="clr-namespace:Wallanguager"
         xmlns:converters="clr-namespace:Wallanguager.Converters"
+        xmlns:learning="clr-namespace:Wallanguager.Learning"
         mc:Ignorable="d"
         Title="Wallanguager" Height="658" Width="721">
 
     <Window.Resources>
         <converters:ImageSourceToBoolConverter x:Key="ImageToBoolConverter" />
+        <converters:SelectedItemToIsEnabledConverter x:Key="SelectedItemToIsEnabledConverter" />
 
         <Style x:Key="groupControlButton" TargetType="{x:Type Button}">
             <Setter Property="MaxWidth" Value="40"/>
@@ -224,7 +226,7 @@
                                         <GridViewColumn Header="Theme" DisplayMemberBinding="{Binding GroupTheme}" Width="auto"/>
                                         <GridViewColumn Header="From"  DisplayMemberBinding="{Binding FromLanguage.FullName}" Width="auto"/>
                                         <GridViewColumn Header="To"    DisplayMemberBinding="{Binding ToLanguage.FullName}" Width="auto"/>
-                                        <GridViewColumn Header="Count" DisplayMemberBinding="{Binding PhrasesCount}" Width="50"/>
+                                        <GridViewColumn Header="Count" DisplayMemberBinding="{Binding Phrases.Count}" Width="50"/>
                                     </GridView>
                                 </ListView.View>
                             </ListView>
@@ -257,7 +259,9 @@
                                 <ColumnDefinition Width="289*" />
                             </Grid.ColumnDefinitions>
 
-                            <ListBox Grid.Column="0" Margin="10">
+                            <ListBox Grid.Column="0" Margin="10" SelectionMode="Extended" 
+                                     ItemsSource="{Binding Path=SelectedItem.(learning:PhrasesGroup.Phrases), ElementName=GroupListView}"
+                                     x:Name="PhrasesListBox">
 
                             </ListBox>
                             <Grid Height="auto" Grid.Column="1">
@@ -267,17 +271,44 @@
                                     <RowDefinition />
                                     <RowDefinition />
                                 </Grid.RowDefinitions>
-                                <Button Grid.Row="1" Style="{StaticResource groupControlButton}">
+                                <Button Click="AddPhraseClick" Grid.Row="1"
+                                        IsEnabled="{
+                                             Binding ElementName=GroupListView,
+                                             Path=SelectedItem, 
+                                             Converter={StaticResource SelectedItemToIsEnabledConverter}
+                                           }"
+                                        Style="{StaticResource groupControlButton}">
                                     <Image Source="Content/phraseAdd.png" />
                                 </Button>
-                                <Button Grid.Row="2" Style="{StaticResource groupControlButton}">
+                                <Button Click="RemovePhraseClick" Grid.Row="2"
+                                        IsEnabled="{
+                                             Binding ElementName=GroupListView,
+                                             Path=SelectedItem, 
+                                             Converter={StaticResource SelectedItemToIsEnabledConverter}
+                                           }"
+                                        Style="{StaticResource groupControlButton}">
                                     <Image Source="Content/phraseDelete.png" />
                                 </Button>
                             </Grid>
-                            <Rectangle Margin="10" Grid.Column="2" StrokeThickness="1" Stroke="Black">
-                                
-                            </Rectangle>
-                            <TextBlock Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Free space for soon</TextBlock>
+                            <Grid Grid.Column="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="46*" />
+                                    <RowDefinition Height="183*" />
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Grid.Row="0" Margin="3">
+                                    <TextBlock HorizontalAlignment="Center" Padding="0 0 0 5">Enter phrases here</TextBlock>
+                                    <TextBlock HorizontalAlignment="Center">(Put each phrase on a new line)</TextBlock>
+                                </StackPanel>
+
+
+                                <RichTextBox Margin="10 0 10 10" x:Name="PhrasesRichTextBox" 
+                                             Grid.Row="1" IsEnabled="{
+                                             Binding ElementName=GroupListView,
+                                             Path=SelectedItem, 
+                                             Converter={StaticResource SelectedItemToIsEnabledConverter}
+                                           }" />
+                            </Grid>
                         </Grid>
                     </GroupBox>
                 </Grid>

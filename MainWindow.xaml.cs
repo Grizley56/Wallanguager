@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Win32;
@@ -54,18 +55,6 @@ namespace Wallanguager
 				Log4NetService.Instance.GetLogger<MainWindow>().Fatal(e);
 				throw;
 			}
-
-			// For tests
-			Language a = (Application.Current.Properties["Languages"] as Language[])[0];
-			Language b = (Application.Current.Properties["Languages"] as Language[])[1];
-			Language c = (Application.Current.Properties["Languages"] as Language[])[2];
-
-			_wallpaperController.Phrases.Add(new PhrasesGroup("Test #1", "Mixed", a, b));
-			_wallpaperController.Phrases.Add(new PhrasesGroup("Test #2", "Body", b, c));
-			_wallpaperController.Phrases.Add(new PhrasesGroup("Test #3", "Sport", c, a));
-			// ---------
-
-			GroupListView.ItemsSource = _wallpaperController.Phrases;
 		}
 
 
@@ -83,6 +72,8 @@ namespace Wallanguager
 			_bindings.Add(MarginProperty, offsetBinding);
 			_bindings.Add(MaxWidthProperty, sizeBinding);
 			_bindings.Add(MaxHeightProperty, sizeBinding);
+
+			GroupListView.ItemsSource = _wallpaperController.PhraseGroups;
 		}
 
 		private void InitializeController()
@@ -311,7 +302,7 @@ namespace Wallanguager
 			if (result == null || !result.Value)
 				return;
 
-			_wallpaperController.Phrases.Add(new PhrasesGroup(_groupWindow.Group.GroupName,
+			_wallpaperController.PhraseGroups.Add(new PhrasesGroup(_groupWindow.Group.GroupName,
 				_groupWindow.Group.GroupTheme, _groupWindow.Group.ToLanguage, _groupWindow.Group.ToLanguage));
 
 			UpdateGridViewColumnsSize(GroupGridViewColumns);
@@ -328,7 +319,7 @@ namespace Wallanguager
 			if ((MessageBox.Show("Are you sure you want to delete this group?", "Confirm action",
 				     MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.Yes) == MessageBoxResult.Yes))
 			{
-				_wallpaperController.Phrases.Remove((PhrasesGroup)GroupListView.SelectedItem);
+				_wallpaperController.PhraseGroups.Remove((PhrasesGroup)GroupListView.SelectedItem);
 				UpdateGridViewColumnsSize(GroupGridViewColumns);
 			}
 
@@ -362,7 +353,7 @@ namespace Wallanguager
 
 		private bool GroupAddUpdateRequirement(PhrasesGroup newGroup, PhrasesGroup oldGroup = null)
 		{
-			return _wallpaperController.Phrases.All<PhrasesGroup>(delegate (PhrasesGroup j)
+			return _wallpaperController.PhraseGroups.All<PhrasesGroup>(delegate (PhrasesGroup j)
 			{
 				if (j.GroupName != newGroup.GroupName || j == oldGroup)
 					return true;
@@ -371,7 +362,6 @@ namespace Wallanguager
 				return false;
 			});
 		}
-
 
 
 		private static void UpdateGridViewColumnsSize(GridView gridView)
@@ -384,6 +374,41 @@ namespace Wallanguager
 				}
 				c.Width = double.NaN;
 			}
+		}
+
+		private void AddPhraseClick(object sender, RoutedEventArgs e)
+		{
+			PhrasesGroup selectedGroup = GroupListView.SelectedItem as PhrasesGroup;
+
+			if (selectedGroup == null)
+				return;
+
+			string phrasesFullText = new TextRange(PhrasesRichTextBox.Document.ContentStart,
+																		  PhrasesRichTextBox.Document.ContentEnd)
+																		  .Text;
+
+			string[] phrases = phrasesFullText.Split('\n');
+			foreach (var phrase in phrases)
+				if(phrase.Trim() != String.Empty)
+					selectedGroup.AddPhrase(new Phrase(phrase.Trim()));
+
+			PhrasesRichTextBox.Document.Blocks.Clear();
+		}
+
+		private void RemovePhraseClick(object sender, RoutedEventArgs e)
+		{
+			PhrasesGroup phrasesGroup = (PhrasesGroup) GroupListView.SelectedItem;
+			//Check is not necessary, because the button is not clickable while the selected one is null
+			if (PhrasesListBox.SelectedItems.Count == 0)
+			{
+				MessageBox.Show("Select phrase for remove", "Fail");
+				return;
+			}
+
+			Phrase[] phrases = PhrasesListBox.SelectedItems.Cast<Phrase>().ToArray();
+
+			foreach (Phrase phrase in phrases)
+				phrasesGroup.RemovePhrase(phrase);
 		}
 	}
 }

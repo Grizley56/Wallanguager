@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -13,11 +14,17 @@ namespace Wallanguager.Learning
 {
 	public class PhrasesGroup : IEnumerable<Phrase>, INotifyPropertyChanged
 	{
-		private List<Phrase> _phrases;
+		private ObservableCollection<Phrase> _phrases;
+
 		private Language _toLanguage;
 		private Language _fromLanguage;
 		private string _groupTheme;
 		private string _groupName;
+
+		public ICollection<Phrase> Phrases => new ReadOnlyObservableCollection<Phrase>(_phrases);
+
+		//public ObservableCollection<Phrase> Phrases => _phrases;
+
 
 		public Language ToLanguage
 		{
@@ -65,8 +72,6 @@ namespace Wallanguager.Learning
 			set { _phrases[index] = value; }
 		}
 
-		public int PhrasesCount => _phrases.Count;
-
 		public PhrasesGroup(string groupName, string groupTheme, Language toLanguage, 
 			Language fromLanguage = null, IEnumerable<Phrase> phrases = null)
 		{
@@ -75,11 +80,23 @@ namespace Wallanguager.Learning
 
 			ToLanguage = toLanguage;
 			FromLanguage = fromLanguage ?? Language.Auto;
-			_phrases = new List<Phrase>();
+			_phrases = new ObservableCollection<Phrase>();
 
 
 			if (phrases != null)
-				_phrases.AddRange(phrases);
+				foreach (var phrase in phrases)
+					_phrases.Add(phrase);
+		}
+
+
+		public void AddPhrase(Phrase phrase)
+		{
+			_phrases.Add(phrase);
+		}
+
+		public bool RemovePhrase(Phrase phrase)
+		{
+			return _phrases.Remove(phrase);
 		}
 
 		public IEnumerator<Phrase> GetEnumerator()
@@ -96,9 +113,8 @@ namespace Wallanguager.Learning
 		{
 			return $"Group name: {GroupName}\nGroup theme: {GroupTheme}\nFrom " +
 			       $"language: {FromLanguage}\nTo language: {ToLanguage}\n" +
-			       $"Phrases count: {PhrasesCount}";
+			       $"Phrases count: {_phrases.Count}";
 		}
-
 
 		public event PropertyChangedEventHandler PropertyChanged;
 

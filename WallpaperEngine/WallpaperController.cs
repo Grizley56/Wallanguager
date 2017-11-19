@@ -21,7 +21,7 @@ namespace Wallanguager.WallpaperEngine
 
 		public WallpaperCollection Wallpapers { get; private set; } = new WallpaperCollection();
 
-		public PhrasesCollection Phrases { get; private set; } = new PhrasesCollection();
+		public PhrasesCollection PhraseGroups { get; private set; } = new PhrasesCollection();
 
 		public Uri DefaultWallpapersPath { get; private set; }
 
