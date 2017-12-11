@@ -387,7 +387,7 @@ namespace Wallanguager.Windows
 			string[] phrases = phrasesFullText.Split('\n');
 			foreach (var phrase in phrases)
 				if(phrase.Trim() != String.Empty)
-					selectedGroup.AddPhrase(new Phrase(phrase.Trim()));
+					selectedGroup.AddPhrase(phrase.Trim());
 
 			PhrasesRichTextBox.Document.Blocks.Clear();
 		}

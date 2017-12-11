@@ -8,11 +8,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
-using Wallanguager.Annotations;
+using GoogleTranslateFreeApi;
+
 
 namespace Wallanguager.Learning
 {
-	public class PhrasesGroup : IEnumerable<Phrase>, INotifyPropertyChanged
+	public class PhrasesGroup : IEnumerable<Phrase>, INotifyPropertyChanged, ITranslatable
 	{
 		private ObservableCollection<Phrase> _phrases;
 
@@ -23,9 +24,6 @@ namespace Wallanguager.Learning
 
 		public ICollection<Phrase> Phrases => new ReadOnlyObservableCollection<Phrase>(_phrases);
 
-		//public ObservableCollection<Phrase> Phrases => _phrases;
-
-
 		public Language ToLanguage
 		{
 			get { return _toLanguage; }
@@ -33,6 +31,17 @@ namespace Wallanguager.Learning
 			{
 				_toLanguage = value;
 				OnPropertyChanged();
+			}
+		}
+
+		public string OriginalText
+		{
+			get
+			{
+				StringBuilder sb = new StringBuilder();
+				foreach (Phrase phrase in _phrases)
+					sb.AppendLine(phrase.OriginalText);
+				return sb.ToString();
 			}
 		}
 
@@ -66,14 +75,10 @@ namespace Wallanguager.Learning
 			}
 		}
 
-		public Phrase this[int index]
-		{
-			get { return _phrases[index]; }
-			set { _phrases[index] = value; }
-		}
+		public Phrase this[int index] => _phrases[index];
 
 		public PhrasesGroup(string groupName, string groupTheme, Language toLanguage, 
-			Language fromLanguage = null, IEnumerable<Phrase> phrases = null)
+			Language fromLanguage = null)
 		{
 			GroupName = groupName;
 			GroupTheme = groupTheme;
@@ -81,17 +86,12 @@ namespace Wallanguager.Learning
 			ToLanguage = toLanguage;
 			FromLanguage = fromLanguage ?? Language.Auto;
 			_phrases = new ObservableCollection<Phrase>();
-
-
-			if (phrases != null)
-				foreach (var phrase in phrases)
-					_phrases.Add(phrase);
 		}
 
 
-		public void AddPhrase(Phrase phrase)
+		public void AddPhrase(string phrase)
 		{
-			_phrases.Add(phrase);
+			_phrases.Add(new Phrase(phrase, this));
 		}
 
 		public bool RemovePhrase(Phrase phrase)

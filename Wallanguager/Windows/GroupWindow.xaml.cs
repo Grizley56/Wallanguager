@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using GoogleTranslateFreeApi;
 using Wallanguager.Learning;
 
 namespace Wallanguager.Windows

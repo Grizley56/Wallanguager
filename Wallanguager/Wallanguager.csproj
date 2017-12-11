@@ -58,6 +58,9 @@
       <HintPath>packages\Easy.Logger.Interfaces.1.0.0\lib\net40\Easy.Logger.Interfaces.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="GoogleTranslateFreeApi">
+      <HintPath>Dependencies\GoogleTranslateFreeApi.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -95,7 +98,6 @@
       <DependentUpon>GroupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\ImageSourceToBoolConverter.cs" />
-    <Compile Include="Learning\Language.cs" />
     <Compile Include="Learning\Phrase.cs" />
     <Compile Include="Learning\PhrasesCollection.cs" />
     <Compile Include="Learning\PhrasesGroup.cs" />
@@ -181,9 +183,7 @@
     <Resource Include="Content\Images\addImage.png" />
     <Resource Include="Content\Images\removeImage.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Translation\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6">
       <Visible>False</Visible>
@@ -195,12 +195,6 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FreeTranslator\FreeTranslator.csproj">
-      <Project>{e86241b6-b730-48f9-88ff-2b724728af05}</Project>
-      <Name>FreeTranslator</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

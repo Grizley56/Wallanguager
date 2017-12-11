@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Windows;
+using GoogleTranslateFreeApi;
 using Newtonsoft.Json;
 using Wallanguager.Learning;
 
@@ -13,7 +14,7 @@ namespace Wallanguager.Windows
 	public partial class App : Application
 	{
 		private static string[] GroupThemes;
-		private static Language[] Languages;
+		private static Language[] Languages = GoogleTranslator.LanguagesSupported;
 
 		private void Application_Startup(object sender, StartupEventArgs e)
 		{
@@ -21,9 +22,6 @@ namespace Wallanguager.Windows
 			{
 				GroupThemes = JsonConvert
 					.DeserializeObject<string[]>(GetResourceString("Wallanguager.Content.Json.GroupThemes.json"));
-
-				Languages = JsonConvert
-					.DeserializeObject<Language[]>(GetResourceString("Wallanguager.Content.Json.Languages.json"));
 			}
 			catch (Exception ex)
 			{
@@ -32,7 +30,7 @@ namespace Wallanguager.Windows
 			}
 
 			Application.Current.Properties.Add("GroupThemes", GroupThemes);
-			Application.Current.Properties.Add("Languages", Languages);
+			Application.Current.Properties.Add("Languages", GoogleTranslator.LanguagesSupported);
 		}
 
 		private string GetResourceString(string resourceName)
