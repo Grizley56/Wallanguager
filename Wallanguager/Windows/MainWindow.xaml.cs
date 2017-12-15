@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -24,12 +27,15 @@ namespace Wallanguager.Windows
 
 		private GeneralWallpaperSettings _settings;
 
+		private DisplaySettings _displaySettings;
+
 		private GroupAddWindow _groupWindow;
 
 		private Wallpaper _selectedWallpaper;
 
-		private readonly Signature _defaultSignature = new Signature("Example", "Пример");
+		private FileInfo _selectedSound;
 
+		private SoundPlayer _player = new SoundPlayer();
 
 		private readonly OpenFileDialog _fileDialog = new OpenFileDialog
 		{
@@ -70,7 +76,7 @@ namespace Wallanguager.Windows
 			_bindings.Add(MaxWidthProperty, sizeBinding);
 			_bindings.Add(MaxHeightProperty, sizeBinding);
 
-			GroupListView.ItemsSource = _wallpaperController.PhraseGroups;
+			GroupListView.ItemsSource = _wallpaperController.PhrasesGroups;
 		}
 
 		private void InitializeController()
@@ -99,7 +105,7 @@ namespace Wallanguager.Windows
 			return screenPosition * scaleMatrix;
 		}
 
-		private void UpdateWallpaperZoomedImage(Point? position = null)
+		private async void UpdateWallpaperZoomedImage(Point? position = null)
 		{
 			if (_selectedWallpaper == null)
 			{
@@ -120,8 +126,8 @@ namespace Wallanguager.Windows
 			try
 			{
 				WallpaperZoomed.Source = _selectedWallpaper.IsFixed
-					? _selectedWallpaper.GetFixedSignedImage(_defaultSignature)
-					: _selectedWallpaper.GetSignedImage(position.Value, _defaultSignature);
+					? await _selectedWallpaper.GetFixedSignedImage(_wallpaperController.DefaultSignature)
+					: await _selectedWallpaper.GetSignedImage(position.Value, _wallpaperController.DefaultSignature);
 			}
 			catch (Exception e)
 			{
@@ -176,8 +182,8 @@ namespace Wallanguager.Windows
 
 		private void GeneralWallpaperSettingsOpen(object sender, RoutedEventArgs e)
 		{
-			_settings = new GeneralWallpaperSettings(Wallpaper.GeneralDefaultFont, 
-				_defaultSignature.Format, Wallpaper.GeneralDefaultStyle)
+			_settings = new GeneralWallpaperSettings(Wallpaper.GeneralDefaultFont,
+				_wallpaperController.DefaultSignature.Format, Wallpaper.GeneralDefaultStyle)
 			{
 				Owner = this,
 				WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -189,7 +195,7 @@ namespace Wallanguager.Windows
 			{
 				Wallpaper.GeneralDefaultFont = _settings.GeneralFontSetting;
 				Wallpaper.GeneralDefaultStyle = _settings.GeneralWallpaperStyle;
-				_defaultSignature.Format = _settings.GeneralSignFormat;
+				_wallpaperController.DefaultSignature.Format = _settings.GeneralSignFormat;
 
 				if (_selectedWallpaper == null)
 					return;
@@ -287,20 +293,22 @@ namespace Wallanguager.Windows
 		}
 
 
-
-
 		private void AddGroupClick(object sender, RoutedEventArgs e)
 		{
 			_groupWindow = new GroupAddWindow((newGroup)
-				=> GroupAddUpdateRequirement(newGroup));
+				=> GroupAddUpdateRequirement(newGroup))
+			{
+				Owner = this,
+				WindowStartupLocation = WindowStartupLocation.CenterOwner
+			};
 
 			bool? result = _groupWindow.ShowDialog();
 
 			if (result == null || !result.Value)
 				return;
 
-			_wallpaperController.PhraseGroups.Add(new PhrasesGroup(_groupWindow.Group.GroupName,
-				_groupWindow.Group.GroupTheme, _groupWindow.Group.ToLanguage, _groupWindow.Group.ToLanguage));
+			_wallpaperController.PhrasesGroups.Add(new PhrasesGroup(_groupWindow.Group.GroupName,
+				_groupWindow.Group.GroupTheme, _groupWindow.Group.ToLanguage, _groupWindow.Group.FromLanguage));
 
 			UpdateGridViewColumnsSize(GroupGridViewColumns);
 		}
@@ -309,14 +317,14 @@ namespace Wallanguager.Windows
 		{
 			if ((GroupListView.SelectedItem as PhrasesGroup) == null)
 			{
-				MessageBox.Show("Select any group", "Fail");
+				MessageBox.Show("Select any group", "Fail", MessageBoxButton.OK, MessageBoxImage.Warning);
 				return;
 			}
 
 			if ((MessageBox.Show("Are you sure you want to delete this group?", "Confirm action",
 				     MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.Yes) == MessageBoxResult.Yes))
 			{
-				_wallpaperController.PhraseGroups.Remove((PhrasesGroup)GroupListView.SelectedItem);
+				_wallpaperController.PhrasesGroups.Remove((PhrasesGroup)GroupListView.SelectedItem);
 				UpdateGridViewColumnsSize(GroupGridViewColumns);
 			}
 
@@ -326,7 +334,7 @@ namespace Wallanguager.Windows
 		{
 			if((GroupListView.SelectedItem as PhrasesGroup) == null)
 			{
-				MessageBox.Show("Select any group", "Fail");
+				MessageBox.Show("Select any group", "Fail", MessageBoxButton.OK, MessageBoxImage.Warning);
 				return;
 			}
 
@@ -350,12 +358,18 @@ namespace Wallanguager.Windows
 
 		private bool GroupAddUpdateRequirement(PhrasesGroup newGroup, PhrasesGroup oldGroup = null)
 		{
-			return _wallpaperController.PhraseGroups.All<PhrasesGroup>(delegate (PhrasesGroup j)
+			if (newGroup.FromLanguage.Equals(newGroup.ToLanguage))
+			{
+				MessageBox.Show("The languages are the same", "Fail", MessageBoxButton.OK, MessageBoxImage.Warning);
+				return false;
+			}
+
+			return _wallpaperController.PhrasesGroups.All<PhrasesGroup>(delegate (PhrasesGroup j)
 			{
 				if (j.GroupName != newGroup.GroupName || j == oldGroup)
 					return true;
 
-				MessageBox.Show($"Group {newGroup.GroupName} already exist!", "Fail");
+				MessageBox.Show($"Group {newGroup.GroupName} already exist!", "Fail", MessageBoxButton.OK, MessageBoxImage.Warning);
 				return false;
 			});
 		}
@@ -372,7 +386,7 @@ namespace Wallanguager.Windows
 				c.Width = double.NaN;
 			}
 		}
-
+		
 		private void AddPhraseClick(object sender, RoutedEventArgs e)
 		{
 			PhrasesGroup selectedGroup = GroupListView.SelectedItem as PhrasesGroup;
@@ -398,7 +412,7 @@ namespace Wallanguager.Windows
 			//Check is not necessary, because the button is not clickable while the selected one is null
 			if (PhrasesListBox.SelectedItems.Count == 0)
 			{
-				MessageBox.Show("Select phrase for remove", "Fail");
+				MessageBox.Show("Select phrase for remove", "Fail", MessageBoxButton.OK, MessageBoxImage.Warning);
 				return;
 			}
 
@@ -406,6 +420,53 @@ namespace Wallanguager.Windows
 
 			foreach (Phrase phrase in phrases)
 				phrasesGroup.RemovePhrase(phrase);
+		}
+
+		private async void StartButtonClick(object sender, RoutedEventArgs e)
+		{
+			await _wallpaperController.Start((_, __) =>
+			{
+				if (_selectedSound == null)
+					return;
+
+				_player.SoundLocation = _selectedSound.FullName;
+				_player.Play();
+			});
+		}
+
+		private void DisplaySettingsClick(object sender, RoutedEventArgs e)
+		{
+			_displaySettings = new DisplaySettings(_wallpaperController.UpdateFrequency, 
+				_selectedSound, _wallpaperController.WallpaperUpdateOrder, _wallpaperController.PhraseUpdateOrder )
+			{
+				Owner = this,
+				WindowStartupLocation = WindowStartupLocation.CenterOwner
+			};
+			if (_displaySettings.ShowDialog() == true)
+			{
+				_wallpaperController.PhraseUpdateOrder = _displaySettings.PhraseUpdateOrder;
+				_wallpaperController.WallpaperUpdateOrder = _displaySettings.WallpaperUpdateOrder;
+				_wallpaperController.UpdateFrequency = _displaySettings.UpdateFrequency;
+				_selectedSound = _displaySettings.SoundFile;
+			}
+			
+		}
+
+		private void StopButtonClick(object sender, RoutedEventArgs e)
+		{
+			_wallpaperController.Stop();
+		}
+
+		protected override void OnClosing(CancelEventArgs e)
+		{
+			_wallpaperController.Stop();
+			base.OnClosing(e);
+		}
+
+		private void GroupListViewItemDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			var phraseGroup = (sender as ListViewItem).Content as PhrasesGroup;
+			phraseGroup.IsEnabled = !phraseGroup.IsEnabled;
 		}
 	}
 }

@@ -7,7 +7,7 @@ using GoogleTranslateFreeApi;
 
 namespace Wallanguager.Learning
 {
-	public struct Phrase : ITranslatable
+	public class Phrase : ITranslatable
 	{
 		private readonly PhrasesGroup _ownedGroup;
 

@@ -21,9 +21,22 @@ namespace Wallanguager.Learning
 		private Language _fromLanguage;
 		private string _groupTheme;
 		private string _groupName;
+		private bool _isEnabled = true;
 
-		public ICollection<Phrase> Phrases => new ReadOnlyObservableCollection<Phrase>(_phrases);
+		public bool TranslationUpdateRequired { get; private set; } = true;
 
+		public ICollection<Phrase> Phrases => new ReadOnlyObservableCollection<Phrase>(_phrases); //TODO: READONLYCOLLECTION
+
+
+		public bool IsEnabled
+		{
+			get { return _isEnabled; }
+			set
+			{
+				_isEnabled = value;
+				OnPropertyChanged();
+			}
+		}
 		public Language ToLanguage
 		{
 			get { return _toLanguage; }
@@ -31,9 +44,19 @@ namespace Wallanguager.Learning
 			{
 				_toLanguage = value;
 				OnPropertyChanged();
+				TranslationUpdateRequired = true;
 			}
 		}
-
+		public Language FromLanguage
+		{
+			get { return _fromLanguage; }
+			set
+			{
+				_fromLanguage = value; 
+				OnPropertyChanged();
+				TranslationUpdateRequired = true;
+			}
+		}
 		public string OriginalText
 		{
 			get
@@ -45,15 +68,6 @@ namespace Wallanguager.Learning
 			}
 		}
 
-		public Language FromLanguage
-		{
-			get { return _fromLanguage; }
-			set
-			{
-				_fromLanguage = value; 
-				OnPropertyChanged();
-			}
-		}
 
 		public string GroupTheme
 		{
@@ -88,7 +102,6 @@ namespace Wallanguager.Learning
 			_phrases = new ObservableCollection<Phrase>();
 		}
 
-
 		public void AddPhrase(string phrase)
 		{
 			_phrases.Add(new Phrase(phrase, this));
@@ -97,6 +110,47 @@ namespace Wallanguager.Learning
 		public bool RemovePhrase(Phrase phrase)
 		{
 			return _phrases.Remove(phrase);
+		}
+
+		public async Task TranslateRequireded(ITranslator translator)
+		{
+			List<Phrase> untranslatedPhrases = new List<Phrase>();
+			string textToTranslate = String.Empty;
+
+			if (TranslationUpdateRequired)
+			{
+				await TranslateAll(translator);
+			}
+			else
+			{
+				foreach (var phrase in this)
+				{
+					if (phrase.TranslatedText != null)
+						continue;
+
+					untranslatedPhrases.Add(phrase);
+					textToTranslate += phrase.OriginalText + '\n';
+				}
+
+				TranslationResult result = await translator.TranslateLiteAsync(textToTranslate.Trim(), FromLanguage, ToLanguage);
+
+				int i = 0;
+				foreach (var untranslatedPhrase in untranslatedPhrases)
+					untranslatedPhrase.TranslatedText = result.FragmentedTranslation[i++];
+			}
+
+
+
+			TranslationUpdateRequired = false;
+		}
+
+		public async Task TranslateAll(ITranslator translator)
+		{
+			var result = await translator.TranslateLiteAsync(this);
+			var i = 0;
+
+			foreach (var phrase in this)
+				phrase.TranslatedText = result.FragmentedTranslation[i++];
 		}
 
 		public IEnumerator<Phrase> GetEnumerator()

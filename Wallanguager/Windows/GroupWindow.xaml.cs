@@ -34,7 +34,8 @@ namespace Wallanguager.Windows
 		{
 			if (!CheckFieldsOnValide())
 			{
-				MessageBox.Show("Please fill in all required fields.");
+				MessageBox.Show("Please fill in all required fields.", "Failed attempt", 
+					MessageBoxButton.OK, MessageBoxImage.Warning);
 				return;
 			}
 

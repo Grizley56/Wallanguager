@@ -26,9 +26,9 @@ namespace Wallanguager.WallpaperEngine
 		private FontInfo _font = new FontInfo(new FontFamily("Times New Roman"), 150, FontStyles.Normal,
 			FontStretches.Normal, FontWeights.Normal, new SolidColorBrush(Colors.Black));
 
-		private WallpaperStyle _style = WallpaperStyle.Center;
+		private WallpaperStyle _style = GeneralDefaultStyle;
 
-		private ImageSource _previousSignedImage = null;
+		private DrawingImage _previousSignedImage = null;
 		private Point _previousPosition;
 
 		public bool IsFontByDefault { get; set; } = true;
@@ -71,7 +71,7 @@ namespace Wallanguager.WallpaperEngine
 
 		public Point FixedSignPosition { get; private set; }
 
-		public ImageSource GetSignedImage(Point drawPosition, Signature sign)
+		public async Task<DrawingImage> GetSignedImage(Point drawPosition, Signature sign)
 		{
 			if (sign == null)
 				throw new ArgumentNullException(nameof(sign));
@@ -82,7 +82,7 @@ namespace Wallanguager.WallpaperEngine
 
 			FormattedText format = new FormattedText(sign.ToString(), CultureInfo.InvariantCulture,
 				FlowDirection, new Typeface(Font.Family, Font.Style, Font.Weight, Font.Stretch),
-				Font.Size, Font.Color.Brush);
+				Font.Size, Font.BrushColor);
 
 			Size textSize = new Size(format.Width, format.Height);
 
@@ -90,39 +90,44 @@ namespace Wallanguager.WallpaperEngine
 			drawPosition.X -= offset.X;
 			drawPosition.Y -= offset.Y;
 
-			if (drawPosition.X + textSize.Width > SourceImage.Width)
-				drawPosition.X = SourceImage.Width - textSize.Width;
+			double sourceImageWidth = 0, sourceImageHeight = 0;
+
+			SourceImage.Dispatcher.Invoke(() => {
+				sourceImageWidth = SourceImage.Width;
+				sourceImageHeight = SourceImage.Height;
+			});
+
+			if (drawPosition.X + textSize.Width > sourceImageWidth)
+				drawPosition.X = sourceImageWidth - textSize.Width;
 			else if (drawPosition.X < 0)
 				drawPosition.X = 0;
 
-			if (drawPosition.Y + textSize.Height > SourceImage.Height)
-				drawPosition.Y = SourceImage.Height - textSize.Height;
+			if (drawPosition.Y + textSize.Height > sourceImageHeight)
+				drawPosition.Y = sourceImageHeight - textSize.Height;
 			else if (drawPosition.Y < 0)
 				drawPosition.Y = 0;
 
 
-			DrawingVisual drawingVisual = new DrawingVisual();
+			_previousSignedImage = await SourceImage.Dispatcher.InvokeAsync(() =>
+			{
+				DrawingVisual drawingVisual = new DrawingVisual();
+				DrawingContext dc = drawingVisual.RenderOpen();
+				dc.DrawImage(SourceImage, new Rect(0, 0, SourceImage.Width, SourceImage.Height));
+				dc.DrawText(format, drawPosition);
+				dc.Close();
 
-			DrawingContext context = drawingVisual.RenderOpen();
+				return new DrawingImage(drawingVisual.Drawing);
+			});
 
-			context.DrawImage(SourceImage, new Rect(0, 0, SourceImage.Width, SourceImage.Height));
-			context.DrawText(format, drawPosition);
-
-			context.Close();
-
-			ImageSource resultImage = new DrawingImage(drawingVisual.Drawing);
-
-			_previousSignedImage = resultImage; // TODO: cahed
-
-			return resultImage;
+			return _previousSignedImage;
 		}
 
-		public ImageSource GetFixedSignedImage(Signature sign)
+		public async Task<DrawingImage> GetFixedSignedImage(Signature sign)
 		{
 			if (!IsFixed)
 				throw new InvalidOperationException("UnFixed state");
 
-			return GetSignedImage(FixedSignPosition, sign);
+			return await GetSignedImage(FixedSignPosition, sign);
 		}
 
 		public void Fix(Point position)
@@ -138,11 +143,24 @@ namespace Wallanguager.WallpaperEngine
 			IsFixed = false;
 		}
 
-		public bool SaveToFile(Uri path)
+		public void SaveToFile(ImageSource image, string path)
 		{
-			return true;
-		}
+			var drawingVisual = new DrawingVisual();
+			var drawingContext = drawingVisual.RenderOpen();
 
-		public bool SaveToFile(string path) { return SaveToFile(new Uri(path)); }
+			drawingContext.DrawImage(image, new Rect(0, 0, image.Width, image.Height));
+			drawingContext.Close();
+
+			RenderTargetBitmap rtb = new RenderTargetBitmap(SourceImage.PixelWidth, SourceImage.PixelHeight, 
+				SourceImage.DpiX, SourceImage.DpiY, PixelFormats.Default);
+
+			rtb.Render(drawingVisual);
+
+			JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+			encoder.Frames.Add(BitmapFrame.Create(rtb));
+
+			using (FileStream stream = new FileStream(path, FileMode.Create))
+				encoder.Save(stream);
+		}
 	}
 }

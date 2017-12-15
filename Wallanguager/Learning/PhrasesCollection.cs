@@ -7,13 +7,14 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GoogleTranslateFreeApi;
 
 namespace Wallanguager.Learning
 {
 	public sealed class PhrasesCollection: ObservableCollection<PhrasesGroup>
 	{
 		public PhrasesGroup this[string key] => Items.FirstOrDefault(i => i.GroupName == key);
-
+		private readonly Random _random = new Random();
 		public PhrasesCollection()
 		{
 			CollectionChanged += PhrasesCollection_CollectionChanged;
@@ -56,5 +57,15 @@ namespace Wallanguager.Learning
 			OnCollectionChanged(args);
 		}
 
+		public Phrase[] GetShuffledPhrases()
+		{
+			List<Phrase> phrases = new List<Phrase>();
+			foreach (PhrasesGroup group in this)
+			{
+				if (group.IsEnabled)
+					phrases.AddRange(group.Phrases.OrderBy( _ => _random.Next()));
+			}
+			return phrases.ToArray();
+		}
 	}
 }
