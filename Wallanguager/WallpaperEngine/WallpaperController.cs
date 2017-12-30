@@ -85,7 +85,7 @@ namespace Wallanguager.WallpaperEngine
 
 		public void AddWallpaper(Uri url)
 		{
-			Wallpapers.Add(GetNewWallpaperByUri(url));
+			AddWallpaper(WallpaperController.GetNewWallpaperByUri(url));
 		}
 
 		public void AddWallpaper(Wallpaper wallpaper)
@@ -206,6 +206,20 @@ namespace Wallanguager.WallpaperEngine
 
 			WinAPI.SetWallpaper(_userWallpaper);
 			WinAPI.SetWallpaperStyle(_userStyle);
+		}
+
+		public void Deserialize()
+		{
+			WallpaperCollection tempCollectipn = null; //get from bin serialize
+			foreach (var v in tempCollectipn)
+			{
+				v.Deserialize();
+				Wallpapers.Add(v);
+			}
+
+			Wallpapers = null; //serialized collection;
+			foreach (var wallpaper in Wallpapers)
+				wallpaper.Deserialize();
 		}
 
 	}

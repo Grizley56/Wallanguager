@@ -32,10 +32,7 @@ namespace Wallanguager.WallpaperEngine
 
 		public static bool SetWallpaper(string path)
 		{
-			if (SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, path, SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE) == 0)
-				return false;
-
-			return true; // there is an error
+			return SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, path, SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE) != 0;
 		}
 
 		public static WallpaperStyle GetWallpaperStyle()

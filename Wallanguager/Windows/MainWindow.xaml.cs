@@ -58,8 +58,17 @@ namespace Wallanguager.Windows
 				Log4NetService.Instance.GetLogger<MainWindow>().Fatal(e);
 				throw;
 			}
+
+			LoadData();
+
 		}
 
+		private void LoadData()
+		{
+			//get data from .bin file
+			//create WallpaperCollection
+			_wallpaperController.Deserialize();
+		}
 
 		private void InitializeBindings()
 		{
@@ -119,7 +128,7 @@ namespace Wallanguager.Windows
 			{
 				Log4NetService.Instance.GetLogger<MainWindow>()
 					.Fatal($"call {nameof(UpdateWallpaperZoomedImage)} " +
-					       $"with position as null parameter [as UnFixedWallaper]");
+					       $"with position as null parameter [as UnFixedWallзaper]");
 				throw new ArgumentNullException(nameof(position));
 			}
 
@@ -143,7 +152,7 @@ namespace Wallanguager.Windows
 
 #if DEBUG
 			Easy.Logger.Log4NetService.Instance.GetLogger<Wallpaper>()
-				.Debug($"Wallaper was removed \"{e.RemovedItem.SourceImage.UriSource}\"");
+				.Debug($"Wallpaper was removed \"{e.RemovedItem.SourceImage.UriSource}\"");
 #endif
 		}
 
@@ -157,7 +166,7 @@ namespace Wallanguager.Windows
 
 #if DEBUG
 			Easy.Logger.Log4NetService.Instance.GetLogger<Wallpaper>()
-				.Debug($"Wallaper was added \"{e.AddedItem.SourceImage.UriSource}\"");
+				.Debug($"Wallpaper was added \"{e.AddedItem.SourceImage.UriSource}\"");
 #endif
 		}
 
@@ -165,7 +174,7 @@ namespace Wallanguager.Windows
 		{
 			_selectedWallpaper = _wallpaperController.Wallpapers.First(i => 
 				ReferenceEquals(i.UIElementImage, sender as Image));
-
+			
 			if (_selectedWallpaper == null)
 				return;
 

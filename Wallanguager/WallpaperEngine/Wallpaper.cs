@@ -16,6 +16,7 @@ using WpfColorFontDialog;
 
 namespace Wallanguager.WallpaperEngine
 {
+	[DataContract]
 	public class Wallpaper
 	{
 		public static FontInfo GeneralDefaultFont { get; set; } = new FontInfo(new FontFamily("Times New Roman"),
@@ -23,15 +24,21 @@ namespace Wallanguager.WallpaperEngine
 
 		public static WallpaperStyle GeneralDefaultStyle { get; set; } = WallpaperStyle.Center;
 
+		[DataMember]
 		private FontInfo _font = new FontInfo(new FontFamily("Times New Roman"), 150, FontStyles.Normal,
 			FontStretches.Normal, FontWeights.Normal, new SolidColorBrush(Colors.Black));
 
+		[DataMember]
 		private WallpaperStyle _style = GeneralDefaultStyle;
 
-		private DrawingImage _previousSignedImage = null;
+		private DrawingImage _previousSignedImage;
+
 		private Point _previousPosition;
 
+		[DataMember]
 		public bool IsFontByDefault { get; set; } = true;
+
+		[DataMember]
 		public bool IsStyleByDefault { get; set; } = true;
 
 		public WallpaperStyle Style
@@ -39,7 +46,12 @@ namespace Wallanguager.WallpaperEngine
 			get { return IsStyleByDefault ? GeneralDefaultStyle : _style; }
 			set { _style = value; }
 		}
+		[DataMember]
 		public FlowDirection FlowDirection { get; set; } = FlowDirection.LeftToRight;
+
+		[DataMember]
+		public Point FixedSignPosition { get; private set; }
+
 		public BitmapImage SourceImage { get; private set; }
 		public Image UIElementImage { get; private set; }
 		public FontInfo Font
@@ -68,8 +80,6 @@ namespace Wallanguager.WallpaperEngine
 			SourceImage = sourceImage;
 			UIElementImage = image;
 		}
-
-		public Point FixedSignPosition { get; private set; }
 
 		public async Task<DrawingImage> GetSignedImage(Point drawPosition, Signature sign)
 		{
@@ -161,6 +171,13 @@ namespace Wallanguager.WallpaperEngine
 
 			using (FileStream stream = new FileStream(path, FileMode.Create))
 				encoder.Save(stream);
+		}
+
+		public void Deserialize()
+		{
+			Image img = new Image() { Source = new BitmapImage(null) };
+			SourceImage = img.Source as BitmapImage;
+			UIElementImage = img;
 		}
 	}
 }
