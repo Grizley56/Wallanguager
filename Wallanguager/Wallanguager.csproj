@@ -49,6 +49,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Content\Icons\Program.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Easy.Logger, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Easy.Logger.3.2.0\lib\net40\Easy.Logger.dll</HintPath>
@@ -165,6 +168,7 @@
     <Resource Include="Content\Images\updateGroup.png" />
     <Resource Include="Content\Images\phraseAdd.png" />
     <Resource Include="Content\Images\phraseDelete.png" />
+    <Resource Include="Content\Icons\Program.ico" />
     <Content Include="Content\Sounds\Sound1.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

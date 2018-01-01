@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Wallanguager.Windows"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="DisplaySettings" Height="195.643" Width="320" ResizeMode="NoResize">
+        Title="DisplaySettings" Height="195.643" Width="320" ResizeMode="NoResize" Icon="/Wallanguager;component/Content/Icons/Program.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />

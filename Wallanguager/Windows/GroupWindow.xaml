@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Wallanguager"
         mc:Ignorable="d"
-        Title="New Group" Height="231" Width="243" ResizeMode="NoResize">
+        Title="New Group" Height="231" Width="243" ResizeMode="NoResize" Icon="/Wallanguager;component/Content/Icons/Program.ico">
     <Canvas>
         <Label Canvas.Top="10" Canvas.Left="15">Group name:</Label>
         <Label Canvas.Top="45" Canvas.Left="15">Group theme:</Label>

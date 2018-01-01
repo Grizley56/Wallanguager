@@ -8,7 +8,7 @@
         xmlns:converters="clr-namespace:Wallanguager.Converters"
         xmlns:learning="clr-namespace:Wallanguager.Learning"
         mc:Ignorable="d"
-        Title="Wallanguager" Height="658" Width="721" WindowStartupLocation="CenterScreen">
+        Title="Wallanguager" Height="658" Width="721" WindowStartupLocation="CenterScreen" Icon="/Wallanguager;component/Content/Icons/Program.ico">
 
     <Window.Resources>
         <converters:ImageSourceToBoolConverter x:Key="ImageToBoolConverter" />

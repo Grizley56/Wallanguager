@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Wallanguager"
         xmlns:wpfX="clr-namespace:WpfColorFontDialog;assembly=WpfColorFontDialog"
         mc:Ignorable="d"
-        Title="General settings" Height="350" Width="450" MinWidth="500" MinHeight="350" MaxWidth="500" MaxHeight="350">
+        Title="General settings" Height="350" Width="450" MinWidth="500" MinHeight="350" MaxWidth="500" MaxHeight="350" Icon="/Wallanguager;component/Content/Icons/Program.ico">
     <Grid>
         <GroupBox x:Name="groupBox" Header="Settings" Margin="5 5 5 5">
             <Grid Margin="5,5,5,5">
