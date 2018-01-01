@@ -15,7 +15,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
 using Easy.Logger;
-using log4net.Repository.Hierarchy;
 using Microsoft.Win32;
 using Wallanguager.Learning;
 using Wallanguager.Serialization;
