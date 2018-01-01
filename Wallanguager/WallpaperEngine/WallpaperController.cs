@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Xml;
 using GoogleTranslateFreeApi;
 using Wallanguager.Learning;
 using Image = System.Windows.Controls.Image;
@@ -29,25 +31,26 @@ namespace Wallanguager.WallpaperEngine
 		private string _userWallpaper;
 		private WallpaperStyle _userStyle;
 
+
 		public Signature DefaultSignature { get; set; } = new Signature("Example", "Пример");
+
 		public TimeSpan UpdateFrequency { get; set; } = TimeSpan.FromSeconds(3);
+
 		public UpdateOrder WallpaperUpdateOrder { get; set; } = UpdateOrder.Randomly;
+
 		public UpdateOrder PhraseUpdateOrder { get; set; } = UpdateOrder.Randomly;
 
 		public bool IsRunning { get; private set; }
 
-		public WallpaperCollection Wallpapers { get; private set; } = new WallpaperCollection();
+		public ObservableCollection<Wallpaper> Wallpapers { get; private set; } = new ObservableCollection<Wallpaper>();
 
 		public PhrasesCollection PhrasesGroups { get; private set; } = new PhrasesCollection();
-
-		public Uri DefaultWallpapersPath { get; private set; }
 
 		public string WallpaperTempPath { get; set; }
 		public const string TEMP_FILE_NAME = "wallpaper_temp.jpeg";
 
-		public WallpaperController(Uri defaultWallpapersPath)
+		public WallpaperController()
 		{
-			DefaultWallpapersPath = defaultWallpapersPath;
 			WallpaperTempPath = Path.Combine(Path.GetTempPath(), "Wallanguager_tmp");
 
 			_timer = new Timer(WallpaperChanging, null, Timeout.Infinite, Timeout.Infinite);
@@ -85,7 +88,7 @@ namespace Wallanguager.WallpaperEngine
 
 		public void AddWallpaper(Uri url)
 		{
-			AddWallpaper(WallpaperController.GetNewWallpaperByUri(url));
+			AddWallpaper(WallpaperController.CreateWallpaper(url));
 		}
 
 		public void AddWallpaper(Wallpaper wallpaper)
@@ -98,25 +101,7 @@ namespace Wallanguager.WallpaperEngine
 			Wallpapers.Remove(wallpaper);
 		}
 
-		public void LoadDefaultWallpapers()
-		{
-			DirectoryInfo wallpaperDir = new DirectoryInfo(DefaultWallpapersPath.AbsolutePath);
-
-			if (!wallpaperDir.Exists)
-			{
-				Easy.Logger.Log4NetService.Instance.GetLogger<Wallpaper>()
-					.Warn("Default directory dont exist " + wallpaperDir.FullName);
-				return;
-			}
-
-			foreach(FileInfo file in wallpaperDir.GetFiles())
-			{
-				if (file.Extension == ".jpg" || file.Extension == ".png" || file.Extension == ".gif" || file.Extension == ".jpeg")
-					Wallpapers.Add(GetNewWallpaperByUri(new Uri(file.FullName)));
-			}
-		}
-
-		private static Wallpaper GetNewWallpaperByUri(Uri uri)
+		public static Wallpaper CreateWallpaper(Uri uri)
 		{
 			Image img = new Image() { Source = new BitmapImage(uri) };
 			return new Wallpaper(img, (BitmapImage) img.Source);
@@ -201,26 +186,14 @@ namespace Wallanguager.WallpaperEngine
 
 		public void Stop()
 		{
+			if (!IsRunning)
+				return;
+
 			_timer.Change(Timeout.Infinite, Timeout.Infinite);
 			IsRunning = false;
 
-			WinAPI.SetWallpaper(_userWallpaper);
 			WinAPI.SetWallpaperStyle(_userStyle);
+			WinAPI.SetWallpaper(_userWallpaper);
 		}
-
-		public void Deserialize()
-		{
-			WallpaperCollection tempCollectipn = null; //get from bin serialize
-			foreach (var v in tempCollectipn)
-			{
-				v.Deserialize();
-				Wallpapers.Add(v);
-			}
-
-			Wallpapers = null; //serialized collection;
-			foreach (var wallpaper in Wallpapers)
-				wallpaper.Deserialize();
-		}
-
 	}
 }

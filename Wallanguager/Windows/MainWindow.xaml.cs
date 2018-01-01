@@ -1,18 +1,24 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Media;
+using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Xml;
 using Easy.Logger;
+using log4net.Repository.Hierarchy;
 using Microsoft.Win32;
 using Wallanguager.Learning;
+using Wallanguager.Serialization;
 using Wallanguager.WallpaperEngine;
 using WpfColorFontDialog;
 
@@ -22,8 +28,7 @@ namespace Wallanguager.Windows
 	{
 		private readonly Dictionary<DependencyProperty, Binding> _bindings = new Dictionary<DependencyProperty, Binding>();
 
-		private readonly WallpaperController _wallpaperController = new WallpaperController(
-			new Uri(Environment.CurrentDirectory));
+		private WallpaperController _wallpaperController = new WallpaperController();
 
 		private GeneralWallpaperSettings _settings;
 
@@ -37,6 +42,11 @@ namespace Wallanguager.Windows
 
 		private SoundPlayer _player = new SoundPlayer();
 
+		private string _savesPath => Path.Combine(Environment.CurrentDirectory, "Saves");
+		private string _generalSettingsSavePath => Path.Combine(_savesPath, "general.xml");
+		private string _wallpapersSavePath => Path.Combine(_savesPath, "wallpapers.xml");
+		private string _phrasesSavePath => Path.Combine(_savesPath, "phrases.xml");
+
 		private readonly OpenFileDialog _fileDialog = new OpenFileDialog
 		{
 			Filter = "Image Files(*.BMP;*.JPG;*.JPEG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG;*.JPEG",
@@ -49,25 +59,68 @@ namespace Wallanguager.Windows
 			InitializeComponent();
 			InitializeBindings();
 
-			try
-			{
-				InitializeController();
-			}
-			catch (Exception e)
-			{
-				Log4NetService.Instance.GetLogger<MainWindow>().Fatal(e);
-				throw;
-			}
+			_wallpaperController.Wallpapers.CollectionChanged += Wallpapers_CollectionChanged;
 
 			LoadData();
-
+			
+			//item source property for groups should be binded after call LoadData
+			GroupListView.ItemsSource = _wallpaperController.PhrasesGroups;
 		}
 
 		private void LoadData()
 		{
-			//get data from .bin file
-			//create WallpaperCollection
-			_wallpaperController.Deserialize();
+			if (!Directory.Exists(_savesPath))
+				return;
+
+			var wallpapers = SerializationHelper.DeSerialize<IEnumerable<Wallpaper>>(_wallpapersSavePath, typeof(MatrixTransform));
+
+			if(wallpapers != null)
+				foreach (var wallpaper in wallpapers)
+					_wallpaperController.Wallpapers.Add(wallpaper);
+
+			var phrases = SerializationHelper.DeSerialize<IEnumerable<PhrasesGroup>>(_phrasesSavePath, typeof(MatrixTransform));
+
+			if(phrases != null)
+				foreach (var phrase in phrases)
+					_wallpaperController.PhrasesGroups.Add(phrase);
+
+			var settings = SerializationHelper.DeSerialize<GeneralSettingsData>(_generalSettingsSavePath, typeof(MatrixTransform));
+			if (settings != null)
+			{
+				//I take FileInfo instance from DisplaySettings because when i'll try to set
+				//soundsComboBox.SelectedItem to deserialized value, it just setup the null
+				//(because FileInfo is the reference type)
+				if(settings.SelectedSound != null)
+					_selectedSound = DisplaySettings.SoundFiles.FirstOrDefault(
+						i => settings.SelectedSound.FullName == i.FullName);
+
+				Wallpaper.GeneralDefaultFont = settings.GeneralFontSettings;
+				Wallpaper.GeneralDefaultStyle = settings.GeneralWallpaperStyle;
+
+				_wallpaperController.UpdateFrequency = settings.UpdateFrequency;
+				_wallpaperController.DefaultSignature = settings.DefaultSignature;
+				_wallpaperController.WallpaperUpdateOrder = settings.WallpaperUpdateOrder;
+				_wallpaperController.PhraseUpdateOrder = settings.PhraseUpdateOrder;
+			}
+
+		}
+
+		private void SaveData()
+		{
+			if (!Directory.Exists(_savesPath))
+				Directory.CreateDirectory(_savesPath);
+
+			SerializationHelper.Serialize(_wallpapersSavePath, _wallpaperController.Wallpapers as IEnumerable<Wallpaper>, 
+				typeof(MatrixTransform));
+
+			SerializationHelper.Serialize(_phrasesSavePath, _wallpaperController.PhrasesGroups as IEnumerable<PhrasesGroup>,
+				typeof(MatrixTransform));
+
+			GeneralSettingsData settingsData = new GeneralSettingsData(_selectedSound, Wallpaper.GeneralDefaultFont,
+				Wallpaper.GeneralDefaultStyle, _wallpaperController.DefaultSignature, _wallpaperController.UpdateFrequency,
+				_wallpaperController.WallpaperUpdateOrder, _wallpaperController.PhraseUpdateOrder);
+
+			SerializationHelper.Serialize(_generalSettingsSavePath, settingsData, typeof(MatrixTransform));
 		}
 
 		private void InitializeBindings()
@@ -85,14 +138,24 @@ namespace Wallanguager.Windows
 			_bindings.Add(MaxWidthProperty, sizeBinding);
 			_bindings.Add(MaxHeightProperty, sizeBinding);
 
-			GroupListView.ItemsSource = _wallpaperController.PhrasesGroups;
+			styleChooser.ItemsSource = Enum.GetValues(typeof(WallpaperStyle));
 		}
 
-		private void InitializeController()
+		private void Wallpapers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
-			_wallpaperController.Wallpapers.WallpaperAdded += Wallpapers_WallpaperAdded;
-			_wallpaperController.Wallpapers.WallpaperRemoved += Wallpapers_WallpaperRemoved;
-			_wallpaperController.LoadDefaultWallpapers();
+			if(e.Action == NotifyCollectionChangedAction.Add)
+				foreach (var item in e.NewItems)
+					Wallpapers_WallpaperAdded(sender, new WallpaperAddedEventArgs((Wallpaper) item));
+			else if(e.Action == NotifyCollectionChangedAction.Remove)
+				foreach (var item in e.OldItems)
+					Wallpapers_WallpaperRemoved(sender, new WallpaperRemovedEventArgs((Wallpaper) item));
+			else if (e.Action == NotifyCollectionChangedAction.Reset)
+			{
+				foreach (var item in e.OldItems)
+					Wallpapers_WallpaperRemoved(sender, new WallpaperRemovedEventArgs((Wallpaper) item));
+				foreach(var item in e.NewItems)
+					Wallpapers_WallpaperAdded(sender, new WallpaperAddedEventArgs((Wallpaper)item));
+			}
 		}
 
 		private void ToggleCheckboxes()
@@ -253,7 +316,7 @@ namespace Wallanguager.Windows
 
 		private void StyleChooserSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			_selectedWallpaper.Style = (WallpaperStyle) (sender as ComboBox).SelectedIndex;
+			_selectedWallpaper.Style = (WallpaperStyle)(sender as ComboBox).SelectedItem;
 		}
 
 		private void IsFontByDefaultClick(object sender, RoutedEventArgs e)
@@ -279,7 +342,7 @@ namespace Wallanguager.Windows
 			_selectedWallpaper.IsStyleByDefault = checkBox.IsChecked.Value;
 			styleChooser.IsEnabled = !checkBox.IsChecked.Value;
 
-			styleChooser.SelectedIndex = (int)_selectedWallpaper.Style;
+			styleChooser.SelectedItem = _selectedWallpaper.Style;
 		}
 
 		private void AddWallpaperClick(object sender, RoutedEventArgs e)
@@ -469,6 +532,7 @@ namespace Wallanguager.Windows
 		protected override void OnClosing(CancelEventArgs e)
 		{
 			_wallpaperController.Stop();
+			SaveData();
 			base.OnClosing(e);
 		}
 

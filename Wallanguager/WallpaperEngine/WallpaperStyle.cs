@@ -8,11 +8,11 @@ namespace Wallanguager.WallpaperEngine
 {
 	public enum WallpaperStyle
 	{
-		Span = 0x0016,
-		Fill = 0x000A,
-		Fit = 0x0006,
-		Stretch = 0x0002,
+		Center = 0x0000,
 		Tile = 0x0001,
-		Center = 0x0000
+		Stretch = 0x0002,
+		Fit = 0x0006,
+		Fill = 0x000A,
+		Span = 0x0016,
 	}
 }

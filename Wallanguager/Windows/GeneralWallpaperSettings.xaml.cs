@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Documents;
 using Wallanguager.WallpaperEngine;
 using WpfColorFontDialog;
 
@@ -12,10 +15,10 @@ namespace Wallanguager.Windows
 		public FontInfo GeneralFontSetting { get; private set; }
 		public SignFormat GeneralSignFormat { get; private set; }
 		public WallpaperStyle GeneralWallpaperStyle { get; private set; }
-
 		public GeneralWallpaperSettings(FontInfo settings, SignFormat signFormat, WallpaperStyle style)
 		{
 			InitializeComponent();
+			generalWallpaperStyleComboBox.ItemsSource = Enum.GetValues(typeof(WallpaperStyle));
 
 			GeneralFontSetting = settings;
 			GeneralSignFormat = signFormat;
@@ -23,14 +26,15 @@ namespace Wallanguager.Windows
 
 			generalFontColorChooser.SelectedFont = settings;
 			generalSignFormatTextBox.Text = signFormat.Pattern;
-			generalWallpaperStyleComboBox.SelectedIndex = (int) style;
+			generalWallpaperStyleComboBox.SelectedItem = style;
 		}
 
 		private void ButtonSaveClick(object sender, RoutedEventArgs e)
 		{
 			GeneralFontSetting = generalFontColorChooser.SelectedFont;
 			GeneralSignFormat = new SignFormat(generalSignFormatTextBox.Text);
-			GeneralWallpaperStyle = (WallpaperStyle)generalWallpaperStyleComboBox.SelectedIndex;
+			GeneralWallpaperStyle = (WallpaperStyle) generalWallpaperStyleComboBox.SelectedItem;
+
 			DialogResult = true;
 		}
 

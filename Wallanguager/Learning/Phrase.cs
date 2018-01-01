@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using GoogleTranslateFreeApi;
 
 namespace Wallanguager.Learning
 {
+	[DataContract]
 	public class Phrase : ITranslatable
 	{
+		[DataMember]
 		private readonly PhrasesGroup _ownedGroup;
-
-		public string OriginalText { get; }
-
+		[DataMember]
+		public string OriginalText { get; private set; }
+		[DataMember]
 		public string TranslatedText { get; set; }
-
+		
 		public Language FromLanguage => _ownedGroup.FromLanguage;
 
 		public Language ToLanguage => _ownedGroup.ToLanguage;

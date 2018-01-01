@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
@@ -13,20 +14,25 @@ using GoogleTranslateFreeApi;
 
 namespace Wallanguager.Learning
 {
+	[DataContract(IsReference = true)]
 	public class PhrasesGroup : IEnumerable<Phrase>, INotifyPropertyChanged, ITranslatable
 	{
+		[DataMember]
 		private ObservableCollection<Phrase> _phrases;
-
+		[DataMember]
 		private Language _toLanguage;
+		[DataMember]
 		private Language _fromLanguage;
+		[DataMember]
 		private string _groupTheme;
+		[DataMember]
 		private string _groupName;
+		[DataMember]
 		private bool _isEnabled = true;
 
 		public bool TranslationUpdateRequired { get; private set; } = true;
 
-		public ICollection<Phrase> Phrases => new ReadOnlyObservableCollection<Phrase>(_phrases); //TODO: READONLYCOLLECTION
-
+		public ICollection<Phrase> Phrases => new ReadOnlyObservableCollection<Phrase>(_phrases);
 
 		public bool IsEnabled
 		{

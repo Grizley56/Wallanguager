@@ -1,12 +1,16 @@
-﻿namespace Wallanguager.WallpaperEngine
+﻿using System.Runtime.Serialization;
+
+namespace Wallanguager.WallpaperEngine
 {
+	[DataContract]
 	public class SignFormat
 	{
 		public static readonly string OriginalToken = "%w";
 		public static readonly string TranslateToken = "%t";
-		public static readonly SignFormat Default = new SignFormat(OriginalToken + " : " + TranslateToken); //TODO: del
+		public static readonly SignFormat Default = new SignFormat(OriginalToken + " : " + TranslateToken);
 
-		public string Pattern { get; }
+		[DataMember]
+		public string Pattern { get; private set; }
 
 		public SignFormat(string pattern)
 		{

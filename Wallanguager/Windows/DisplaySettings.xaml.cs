@@ -23,9 +23,9 @@ namespace Wallanguager.Windows
 	public partial class DisplaySettings : Window
 	{
 		private static SoundPlayer _player = new SoundPlayer();
-		private static FileInfo[] _soundFiles;
 		private const string SOUND_FILE_PATH = "Content/Sounds";
 		
+		public static FileInfo[] SoundFiles { get; }
 		public TimeSpan UpdateFrequency { get; private set; }
 		public UpdateOrder WallpaperUpdateOrder { get; private set; }
 		public UpdateOrder PhraseUpdateOrder { get; private set; }
@@ -35,7 +35,7 @@ namespace Wallanguager.Windows
 		{
 			DirectoryInfo soundsDir = new DirectoryInfo(SOUND_FILE_PATH);
 			if (soundsDir.Exists)
-				_soundFiles = soundsDir.GetFiles().OrderBy(i => i.Name.Length).ToArray();
+				SoundFiles = soundsDir.GetFiles("*.wav").OrderBy(i => i.Name.Length).ToArray();
 		}
 
 		public DisplaySettings() : this(TimeSpan.Zero, null, UpdateOrder.Randomly, UpdateOrder.Randomly) { }
@@ -46,8 +46,8 @@ namespace Wallanguager.Windows
 
 			soundsComboBox.Items.Add("None");
 
-			if (_soundFiles != null)
-				foreach (var sound in _soundFiles)
+			if (SoundFiles != null)
+				foreach (var sound in SoundFiles)
 					soundsComboBox.Items.Add(sound);
 
 			if (soundInfo == null)
@@ -55,6 +55,7 @@ namespace Wallanguager.Windows
 			else
 				soundsComboBox.SelectedItem = soundInfo;
 
+			
 			Hours.Text = frequency.Hours.ToString();
 			Minutes.Text = frequency.Minutes.ToString();
 			Seconds.Text = frequency.Seconds.ToString();

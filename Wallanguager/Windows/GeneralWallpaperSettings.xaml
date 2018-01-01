@@ -24,14 +24,7 @@
                         </Grid.RowDefinitions>
 
                         <Label Content="Style" Grid.Row="0"/>
-                        <ComboBox x:Name="generalWallpaperStyleComboBox" Grid.Row="0" Margin="59,2,9,13">
-                            <ListBoxItem Content="Fill"/>
-                            <ListBoxItem Content="Fit"/>
-                            <ListBoxItem Content="Stretch"/>
-                            <ListBoxItem Content="Tile"/>
-                            <ListBoxItem Content="Center"/>
-                            <ListBoxItem Content="Span"/>
-                        </ComboBox>
+                        <ComboBox x:Name="generalWallpaperStyleComboBox" Grid.Row="0" Margin="59,2,9,13" />
                         <Label Grid.Row="1" Content="Format"/>
                         <TextBox x:Name="generalSignFormatTextBox" Grid.Row="1" Margin="59,2,9,15"/>
                         <Expander Header="More format info" HorizontalAlignment="Left" Height="82" VerticalAlignment="Top" Grid.Row="2" Width="169" Margin="0,0,-1,0">

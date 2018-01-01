@@ -20,38 +20,36 @@ namespace Wallanguager.WallpaperEngine
 	public class Wallpaper
 	{
 		public static FontInfo GeneralDefaultFont { get; set; } = new FontInfo(new FontFamily("Times New Roman"),
-			150, FontStyles.Normal, FontStretches.Normal, FontWeights.Normal, new SolidColorBrush(Colors.Black));
+			70, FontStyles.Normal, FontStretches.Normal, FontWeights.Normal, new SolidColorBrush(Colors.Black));
 
 		public static WallpaperStyle GeneralDefaultStyle { get; set; } = WallpaperStyle.Center;
 
-		[DataMember]
-		private FontInfo _font = new FontInfo(new FontFamily("Times New Roman"), 150, FontStyles.Normal,
+		[DataMember] private FontInfo _font = new FontInfo(new FontFamily("Times New Roman"), 70, FontStyles.Normal,
 			FontStretches.Normal, FontWeights.Normal, new SolidColorBrush(Colors.Black));
 
-		[DataMember]
-		private WallpaperStyle _style = GeneralDefaultStyle;
+		[DataMember] private WallpaperStyle _style = GeneralDefaultStyle;
+
+		[DataMember] private readonly Uri _soruceImageUri;
+
+		[DataMember] public FlowDirection FlowDirection { get; set; } = FlowDirection.LeftToRight;
+	
+		[DataMember] public Point FixedSignPosition { get; private set; }
+
+		[DataMember] public bool IsFixed { get; private set; }
+
+		[DataMember] public bool IsFontByDefault { get; set; } = true;
+
+		[DataMember] public bool IsStyleByDefault { get; set; } = true;
 
 		private DrawingImage _previousSignedImage;
 
 		private Point _previousPosition;
-
-		[DataMember]
-		public bool IsFontByDefault { get; set; } = true;
-
-		[DataMember]
-		public bool IsStyleByDefault { get; set; } = true;
 
 		public WallpaperStyle Style
 		{
 			get { return IsStyleByDefault ? GeneralDefaultStyle : _style; }
 			set { _style = value; }
 		}
-		[DataMember]
-		public FlowDirection FlowDirection { get; set; } = FlowDirection.LeftToRight;
-
-		[DataMember]
-		public Point FixedSignPosition { get; private set; }
-
 		public BitmapImage SourceImage { get; private set; }
 		public Image UIElementImage { get; private set; }
 		public FontInfo Font
@@ -72,13 +70,14 @@ namespace Wallanguager.WallpaperEngine
 				IsFontByDefault = (value == GeneralDefaultFont);
 			}
 		}
-		public bool IsFixed { get; private set; }
 
 		public Wallpaper(Image image, BitmapImage sourceImage)
 		{
 			Font = GeneralDefaultFont;
 			SourceImage = sourceImage;
 			UIElementImage = image;
+
+			_soruceImageUri = sourceImage.UriSource;
 		}
 
 		public async Task<DrawingImage> GetSignedImage(Point drawPosition, Signature sign)
@@ -173,9 +172,10 @@ namespace Wallanguager.WallpaperEngine
 				encoder.Save(stream);
 		}
 
-		public void Deserialize()
+		[OnDeserialized]
+		private void OnDeserialized(StreamingContext context)
 		{
-			Image img = new Image() { Source = new BitmapImage(null) };
+			Image img = new Image { Source = new BitmapImage(_soruceImageUri) };
 			SourceImage = img.Source as BitmapImage;
 			UIElementImage = img;
 		}

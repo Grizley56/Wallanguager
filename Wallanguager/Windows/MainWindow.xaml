@@ -145,11 +145,11 @@
                                 <Image Source="../Content/Images/refreshImage.png"></Image>
                             </Button>
 
-                            <Button Click="StartButtonClick" Grid.Column="3" BorderThickness="0" Height="24" ToolTip="General settings" Margin="10,12,9,9">
+                            <Button Click="StartButtonClick" Grid.Column="3" BorderThickness="0" Height="24" ToolTip="Start" Margin="10,12,9,9">
                                 <Image Source="../Content/Images/engineStart.png"></Image>
                             </Button>
 
-                            <Button Click="StopButtonClick" Grid.Column="4" BorderThickness="0"  Height="24" ToolTip="Refresh wallpaper settings" Margin="10,12,9,9" >
+                            <Button Click="StopButtonClick" Grid.Column="4" BorderThickness="0"  Height="24" ToolTip="Pause" Margin="10,12,9,9" >
                                 <Image Source="../Content/Images/enginePause.png"></Image>
                             </Button>
 
@@ -187,12 +187,12 @@
                                         <WrapPanel>
                                             <Label>Style</Label>
                                             <ComboBox Width="100" x:Name="styleChooser" SelectionChanged="StyleChooserSelectionChanged">
-                                                <ListBoxItem Content="Fill"/>
+                                                <!--<ListBoxItem Content="Fill"/>
                                                 <ListBoxItem Content="Fit"/>
                                                 <ListBoxItem Content="Stretch"/>
                                                 <ListBoxItem Content="Tile"/>
                                                 <ListBoxItem Content="Center"/>
-                                                <ListBoxItem Content="Span"/>
+                                                <ListBoxItem Content="Span"/>-->
                                             </ComboBox>
                                             <CheckBox x:Name="isFontByDefault" FontSize="14" Content="Font by default" Margin="5 10 0 0" Click="IsFontByDefaultClick"/>
                                             <CheckBox x:Name="isStyleByDefault" FontSize="14" Content="Style by default" Margin="5 10 0 0" Click="IsStyleByDefaultClick"/>

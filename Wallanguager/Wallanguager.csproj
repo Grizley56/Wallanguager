@@ -94,6 +94,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Serialization\GeneralSettingsData.cs" />
+    <Compile Include="Serialization\SerializationHelper.cs" />
     <Compile Include="Converters\BoolToStringConverter.cs" />
     <Compile Include="Converters\SelectedItemToIsEnabledConverter.cs" />
     <Compile Include="WallpaperEngine\UpdateOrder.cs" />
@@ -113,7 +115,6 @@
     <Compile Include="WallpaperEngine\SignFormat.cs" />
     <Compile Include="WallpaperEngine\Wallpaper.cs" />
     <Compile Include="WallpaperEngine\WallpaperAddedEventArgs.cs" />
-    <Compile Include="WallpaperEngine\WallpaperCollection.cs" />
     <Compile Include="WallpaperEngine\WallpaperController.cs" />
     <Compile Include="WallpaperEngine\WallpaperRemovedEventArgs.cs" />
     <Compile Include="WallpaperEngine\WallpaperStyle.cs" />
